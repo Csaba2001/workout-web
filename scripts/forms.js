@@ -15,7 +15,15 @@ function getInputForms(form){
 function getData(inputs){
     let data = {};
     for(let i = 0; i < inputs.length; i++){
-        data[inputs[i].name] = inputs[i].value;
+        if(inputs[i].type === "checkbox") {
+            if (inputs[i].checked) {
+                data[inputs[i].name] = inputs[i].value;
+            }else{
+                data[inputs[i].name] = "";
+            }
+        }else{
+            data[inputs[i].name] = inputs[i].value;
+        }
     }
     return data;
 }

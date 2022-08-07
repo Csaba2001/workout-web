@@ -67,29 +67,56 @@
         </div>
     </div>
 </div>
-<script type="application/javascript" src="scripts/forms.js"></script>
+<div class="modal fade" id="registerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Regisztracio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Bezar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registerModalForm" action="register.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="registerFirstName" name="registerFirstName" placeholder="Janos">
+                        <label for="floatingInput">Név</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="registerLastName" name="registerLastName" placeholder="Dobo">
+                        <label for="floatingInput">Vezetéknév</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="registerEmail" name="registerEmail" placeholder="dobo@cs.cs">
+                        <label for="floatingInput">Email</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="registerPhone" name="registerPhone" placeholder="06066666666">
+                        <label for="floatingInput">Telefonszám</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="registerPassword" name="registerPassword" placeholder="Jelszo">
+                        <label for="floatingPassword">Jelszó</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="registerPasswordConfirm" name="registerPasswordConfirm" placeholder="Jelszo">
+                        <label for="floatingPassword">Jelszó visszaigazolás</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="trainer" id="registerUserType" name="registerUserType">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Edző vagyok
+                        </label>
+                    </div>
+                    <div class="alert alert-danger mt-2" role="alert" style="display: none;">
 
-<!--div class="overlay" id="divTwo">
-    <div class="wrapper">
-        <h2>Regisztráció</h2>
-        <a href="#" class="close">&times;</a>
-        <div class="content">
-            <div class="container">
-                <form>
-                    <label for="email">E-mail-cím</label>
-                    <input type="text" placeholder="E-mail-cím" name="email" id="email">
-                    <label for="username">Felhasználónév</label>
-                    <input type="text" placeholder="Felhasználónév" name="username" id="username">
-                    <label for="password">Jelszó</label>
-                    <input type="text" placeholder="Jelszó" name="password" id="password">
-                    <label for="password">Jelszó megerőítése</label>
-                    <input type="text" placeholder="Jelszó megerőítése" name="passwordrp" id="passwordrp">
-                    <input type="checkbox" id="trainer" name="trainer" value="trainer">
-                    <label for="trainer"> Regisztrálás mint edző</label><br>
-                    <button type="submit">Regisztráció</button>
+                    </div>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezar</button>
+                <button type="submit" form="registerModalForm" class="btn btn-primary">Regisztracio</button>
             </div>
         </div>
     </div>
-</div-->
+</div>
+<script type="application/javascript" src="scripts/forms.js"></script>
 <?php endif; ?>

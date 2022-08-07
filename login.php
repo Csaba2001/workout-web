@@ -39,13 +39,19 @@ function login(){
     try {
         $dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME.";charset=utf8", DB_USER, DB_PASS);
 
-        $sql = "SELECT * FROM Persons WHERE Email=? Limit 1";
+        $sql = "SELECT * FROM persons WHERE Email = ? LIMIT 1;";
         $query = $dbh->prepare($sql);
         $query->bindParam(1, $email);
         $query->execute();
         $results = $query->fetch(PDO::FETCH_ASSOC);
         if($results){
             if(password_verify($password, $results['Hash'])){
+                if($results["Verified"] !== "verified"){
+                    json("A felhasznalo nincs visszaigazolva kerjuk nezze meg az email fiokjat");
+                }
+                if($results["Status"] !== "active"){
+                    json("A felhasznalo fiokja tiltva van");
+                }
                 $_SESSION = $results;
                 json("Successful login", "ok", ["redirect" => "index.php?page=home"]); //orulj neki (: szassz
             }else{
