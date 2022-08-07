@@ -29,6 +29,9 @@ include("functions.php");
             case "workout":
                 include("pages/workout.php");
                 break;
+            case "profile":
+                include("pages/profile.php");
+                break;
             case "home":
             default:
                 include("pages/home.php");

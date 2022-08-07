@@ -15,6 +15,9 @@
                     <a class="nav-link" href="index.php?page=workout">Edzéstervek</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="profile.php?page=profile">Profil</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="login.php">Kijelentkezés</a>
                 </li>
                 <?php if($_SESSION['Rank'] == "trainer") : ?><!-- for trainers,    other auths: user, trainer, admin -->
