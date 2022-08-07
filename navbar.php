@@ -1,29 +1,3 @@
-<?php
-session_start();
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <!-- JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
-    <script>
-        var myWindow;
-        function openWin() {
-            myWindow = window.open("#divOne", "myWindow", "width=200,height=100");
-        }
-
-    </script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,54 +37,39 @@ session_start();
         </div>
     </div>
 </nav>
-<?php
-if(isset($_GET['page'])){
-    $page=$_GET['page'];
-}
-else{
-    header('location: index.php?page=home');
-}
-switch ($page){
-    case 'workout':
-        if(isset($_SESSION['Email'])){
-            include "workout.php";
-            //var_dump($_SESSION);
-        }
-        break;
-    case 'execa':
-        if(isset($_SESSION['Email'])&&$_SESSION['Rank']=='trainer'){
-            include "execa.php";
-        }
-        break;
-    case 'logout':
-        header('location: login.php');
-        break;
-    case 'home':
-        include "home.php";
-        break;
-    default:
-        echo 'Nincs ilyen oldal';
-        break;
-}
-?>
-<div class="overlay" id="divOne">
-    <div class="wrapper">
-        <h2>Bejelentkezés</h2>
-        <a href="#" class="close">&times;</a>
-        <div class="content">
-            <div class="container">
-                <form action="login.php" method="post" enctype="application/x-www-form-urlencoded">
-                    <label for="logusername">Felhasználónév</label>
-                    <input type="text" placeholder="Felhasználónév" name="logusername" id="logusername">
-                    <label for="password">Jelszó</label>
-                    <input type="text" placeholder="Jelszó" name="logpassword" id="logpassword">
-                    <button type="submit">Bejelentkezés</button>
+<?php if(!isset($_SESSION['Email'])) : ?>
+<div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Bejelentkezés</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Megsem"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginModalForm" action="login.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="loginEmail" name="loginEmail" placeholder="name@example.com">
+                        <label for="floatingInput">Email cím</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="loginPassword" name="loginPassword" placeholder="Jelszo">
+                        <label for="floatingPassword">Jelszó</label>
+                    </div>
+                    <div class="alert alert-danger mt-2" role="alert" style="display: none;">
+
+                    </div>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezar</button>
+                <button type="submit" form="loginModalForm" class="btn btn-primary">Bejelentkezes</button>
             </div>
         </div>
     </div>
 </div>
-<div class="overlay" id="divTwo">
+<script type="application/javascript" src="scripts/forms.js"></script>
+
+<!--div class="overlay" id="divTwo">
     <div class="wrapper">
         <h2>Regisztráció</h2>
         <a href="#" class="close">&times;</a>

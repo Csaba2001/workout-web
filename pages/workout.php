@@ -46,7 +46,7 @@ if(isset($_POST['submit'])) {                     //keresés
 }
 ?>
 <div style="float: left;width: 60%">
-<form method="post" action="index.php?page=workout" enctype="application/x-www-form-urlencoded">
+<form method="post" action="../index.php?page=workout" enctype="application/x-www-form-urlencoded">
     <blockquote class="blockquote text-center"> <label for="categories"><h1>Category</h1></label></blockquote>
     <select name="categories" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
         <option value="nocateg">Kategória</option>
