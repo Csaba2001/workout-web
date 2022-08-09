@@ -12,7 +12,7 @@
 
                 <?php if(isset($_SESSION['Email'])): ?><!-- user, trainer, admin -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=workout">Edzéstervek</a>
+                    <a class="nav-link" href="index.php?page=search">Edzéstervek</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="profile.php?page=profile">Profil</a>
@@ -22,7 +22,7 @@
                 </li>
                 <?php if($_SESSION['Rank'] == "trainer") : ?><!-- for trainers,    other auths: user, trainer, admin -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=execa">Edzés hozzáadása</a>
+                    <a class="nav-link" href="index.php?page=execa">Gyakorlat létrehozása</a>
                 </li>
                 <?php elseif($_SESSION['Rank'] == "admin") : ?><!-- admin -->
                 <li class="nav-item">

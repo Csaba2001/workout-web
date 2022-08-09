@@ -26,11 +26,14 @@ include("functions.php");
             case "execa":
                 include("pages/execa.php");
                 break;
-            case "workout":
-                include("pages/workout.php");
+            case "search":
+                include("pages/search.php");
                 break;
             case "profile":
                 include("pages/profile.php");
+                break;
+            case "workout":
+                include("pages/workout.php");
                 break;
             case "home":
             default:
