@@ -1,10 +1,9 @@
 <?php
-session_start();
-const SECRET = "eperfa28ha3";
+@session_start();
 require_once("db_config.php");
-include_once("functions.php");
+require_once("functions.php");
 
-if(isset($_SESSION['Email'])){
+if(isLoggedIn()){
     unset($_SESSION);
     session_destroy();
     redirect("index.php?page=home");
@@ -19,6 +18,8 @@ if(isPost() && !empty($_POST)){
         json("Not a POST request");
     }
 }
+global $dbh;
+
 function register(){
     $email = sanitize($_POST["registerEmail"]);
     $password = sanitize($_POST["registerPassword"]);

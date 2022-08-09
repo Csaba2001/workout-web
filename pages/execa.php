@@ -1,17 +1,21 @@
 <?php
 @session_start();
 require_once("functions.php");
-const SECRET = "eperfa28ha3";
 require_once("db_config.php");
-if(empty($_SESSION) || $_SESSION["Rank"] === 'user'){
+
+if(!isTrainer()){
     redirect("index.php?page=home");
     die();
 }
 
 global $dbh;
 try {
+    $personId=$_SESSION['PersonID'];                                          //keresés yo skrill drop it hard
+    $sql = "SELECT ExerciseName, Description FROM exercises WHERE TrainerID=:ed;";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':ed', $personId);
     $query->execute();
-    $results = $query->fetchAll();
+    $results = $query->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $error) {
     die($error);
 }
@@ -37,3 +41,5 @@ print_r($results);
         <input type="submit" class="btn btn-primary" value="Letrehozas">
     </form>
 </div>
+
+<script src="scripts/forms.js"></script>

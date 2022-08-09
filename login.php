@@ -1,13 +1,10 @@
 <?php
-session_start();
-const SECRET = "eperfa28ha3";
+@session_start();
 require_once("db_config.php");
-include_once("functions.php");
+require_once("functions.php");
 
-if(isset($_SESSION['Email'])){
-    unset($_SESSION);
-    session_destroy();
-    redirect("index.php?page=home");
+if(isLoggedIn()){
+    logout();
 }
 if(isPost() && !empty($_POST)){
     login();
@@ -37,8 +34,7 @@ function login(){
     }
 
     try {
-        $dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME.";charset=utf8", DB_USER, DB_PASS);
-
+        global $dbh;
         $sql = "SELECT * FROM persons WHERE Email = ? LIMIT 1;";
         $query = $dbh->prepare($sql);
         $query->bindParam(1, $email);
@@ -52,6 +48,10 @@ function login(){
                 if($results["Status"] !== "active"){
                     json("A felhasznalo fiokja tiltva van");
                 }
+                $sql = "UPDATE persons SET NewPassword = NULL, NewPasswordExpires = NULL, CodePassword = NULL WHERE Email = :email;";
+                $query = $dbh->prepare($sql);
+                $query->bindParam(":email",$email);
+                $query->execute();
                 $_SESSION = $results;
                 json("Successful login", "ok", ["redirect" => "index.php?page=home"]); //orulj neki (: szassz
             }else{

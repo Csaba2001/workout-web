@@ -1,8 +1,8 @@
 <?php
-session_start();
-const SECRET = "eperfa28ha3";
+@session_start();
 require_once("db_config.php");
-include_once("functions.php");
+require_once("functions.php");
+global $dbh;
 
 if(isset($_SESSION['Email'])){
     redirect("index.php?page=home");
@@ -19,7 +19,6 @@ if(isset($_SESSION['Email'])){
         }
 
         try {
-            $dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME.";charset=utf8", DB_USER, DB_PASS);
             $sql = "SELECT Verified, VerifyCode, RegistrationExpires FROM persons WHERE Email = :email;";
             $query = $dbh->prepare($sql);
             $query->bindParam(":email",$email);

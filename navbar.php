@@ -9,22 +9,19 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=home">Kezdőlap</a>
                 </li>
-
-                <?php if(isset($_SESSION['Email'])): ?><!-- user, trainer, admin -->
+                <?php if(isLoggedIn()): ?><!-- user, trainer, admin -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=search">Edzéstervek</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="profile.php?page=profile">Profil</a>
+                    <a class="nav-link" href="index.php?page=workout">Edzés létrehozása</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="login.php">Kijelentkezés</a>
-                </li>
-                <?php if($_SESSION['Rank'] == "trainer") : ?><!-- for trainers,    other auths: user, trainer, admin -->
+
+                <?php if(isTrainer()) : ?><!-- for trainers,    other auths: user, trainer, admin -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=execa">Gyakorlat létrehozása</a>
                 </li>
-                <?php elseif($_SESSION['Rank'] == "admin") : ?><!-- admin -->
+                <?php elseif(isAdmin()) : ?><!-- admin -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=execa">Edzés hozzáadása</a>
                 </li>
@@ -37,10 +34,59 @@
                 </li>
                 <?php endif; ?>
             </ul>
+            <?php if(isLoggedIn()): ?>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <?= $_SESSION["FirstName"]." ".$_SESSION["LastName"] ?>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                        <li><span class="text-muted dropdown-item"><?= ucwords($_SESSION["Rank"]) ?></span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="index.php?page=profile">Profil</a></li>
+                        <li><a class="dropdown-item" href="login.php">Kijelentkezés</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <?php endif; ?>
         </div>
     </div>
 </nav>
 <?php if(!isset($_SESSION['Email'])) : ?>
+<div class="modal fade" id="forgotPasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Elfelejtett jelszo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Megsem"></button>
+            </div>
+            <div class="modal-body">
+                <form id="forgotPasswordModalForm" action="forgot.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="forgotEmail" name="forgotEmail" placeholder="name@example.com">
+                        <label for="floatingInput">Email cím</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="forgotPassword" name="forgotPassword" placeholder="password">
+                        <label for="floatingInput">Uj jelszo</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="forgotPasswordConfirm" name="forgotPasswordConfirm" placeholder="password">
+                        <label for="floatingInput">Uj jelszo meg egyszer</label>
+                    </div>
+                    <div class="alert alert-danger mt-2" role="alert" style="display: none;">
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">Nem felejtettem el</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezar</button>
+                <button type="submit" form="forgotPasswordModalForm" class="btn btn-primary">Kuldes</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -64,6 +110,7 @@
                 </form>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Elfelejtett jelszo</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezar</button>
                 <button type="submit" form="loginModalForm" class="btn btn-primary">Bejelentkezes</button>
             </div>

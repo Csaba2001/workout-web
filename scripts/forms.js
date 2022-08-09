@@ -5,7 +5,7 @@ window.addEventListener("load", function(){
     }
 });
 function getInputs(form){
-    let inputs = form.querySelectorAll("input");
+    let inputs = form.querySelectorAll('input:not([type=submit],[type=reset]), textarea');
     return inputs;
 }
 function getInputForms(form){
@@ -30,6 +30,8 @@ function getData(inputs){
 function setAlert(form, errorStr){
     let alertDiv = form.querySelector("div.alert");
     alertDiv.style.display = "block";
+    alertDiv.classList.remove("alert-success");
+    alertDiv.classList.add("alert-danger");
     alertDiv.innerHTML = errorStr;
 }
 function clearAlert(form){
@@ -50,6 +52,17 @@ function clearErrors(form, floatingForms){
         inputs[i].classList.remove("is-invalid");
     }
 }
+function success(form, successStr){
+    let inputs = getInputs(form);
+    for(let i = 0; i < inputs.length; i++){
+        inputs[i].classList.add("is-valid");
+    }
+    let alertDiv = form.querySelector("div.alert");
+    alertDiv.style.display = "block";
+    alertDiv.classList.remove("alert-danger");
+    alertDiv.classList.add("alert-success");
+    alertDiv.innerHTML = successStr;
+}
 
 function ajax(e){
     e.preventDefault();
@@ -68,10 +81,17 @@ function ajax(e){
         console.log("response:");
         console.log(response);
         if(response.type === "error"){
-            setAlert(form, response.message);
+            if(response.message) {
+                setAlert(form, response.message);
+            }
         }
-        if(response.type === "ok" && response.options.redirect){
-            window.location.href = response.options.redirect;
+        if(response.type === "ok"){
+            if(response.message){
+                success(form, response.message);
+            }
+            if(response.options.redirect){
+                window.location.href = response.options.redirect;
+            }
         }
     });
 }

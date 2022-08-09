@@ -4,6 +4,7 @@ require_once("db_config.php");
 function redirect($URL){
     header("Location: $URL");
     echo "<script>window.location.href = '$URL';</script>";
+    die();
 }
 function sanitize($str){
     $str = stripslashes($str);
@@ -34,4 +35,21 @@ function sendMail($to, $subject, $message){
     }else{
         return false;
     }
+}
+function isTrainer(){
+    return !empty($_SESSION) && $_SESSION["Rank"] === 'trainer';
+}
+function isUser(){
+    return !empty($_SESSION) && $_SESSION["Rank"] === 'user';
+}
+function isAdmin(){
+    return !empty($_SESSION) && $_SESSION["Rank"] === 'admin';
+}
+function isLoggedIn(){
+    return isTrainer() or isUser() or isAdmin();
+}
+function logout(){
+    unset($_SESSION);
+    session_destroy();
+    redirect("index.php?page=home");
 }
