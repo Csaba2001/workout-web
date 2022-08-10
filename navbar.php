@@ -128,33 +128,37 @@
                 <form id="registerModalForm" action="register.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="registerFirstName" name="registerFirstName" placeholder="Janos">
-                        <label for="floatingInput">Név</label>
+                        <label for="registerFirstName">Név</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="registerLastName" name="registerLastName" placeholder="Dobo">
-                        <label for="floatingInput">Vezetéknév</label>
+                        <label for="registerLastName">Vezetéknév</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="registerEmail" name="registerEmail" placeholder="dobo@cs.cs">
-                        <label for="floatingInput">Email</label>
+                        <label for="registerEmail">Email</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="registerPhone" name="registerPhone" placeholder="06066666666">
-                        <label for="floatingInput">Telefonszám</label>
+                        <label for="registerPhone">Telefonszám</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control" id="registerPassword" name="registerPassword" placeholder="Jelszo">
-                        <label for="floatingPassword">Jelszó</label>
+                        <label for="registerPassword">Jelszó</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control" id="registerPasswordConfirm" name="registerPasswordConfirm" placeholder="Jelszo">
-                        <label for="floatingPassword">Jelszó visszaigazolás</label>
+                        <label for="registerPasswordConfirm">Jelszó visszaigazolás</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="trainer" id="registerUserType" name="registerUserType">
+                        <input class="form-check-input" type="checkbox" value="trainer" id="registerUserType" name="registerUserType" onclick="trainerInput(this, this.form)">
                         <label class="form-check-label" for="flexCheckDefault">
                             Edző vagyok
                         </label>
+                    </div>
+                    <div id="cvInput" class="form-floating mb-3" style="display: none;">
+                        <textarea class="form-control" name="CV" id="CV" disabled></textarea>
+                        <label for="CV">CV</label>
                     </div>
                     <div class="alert alert-danger mt-2" role="alert" style="display: none;">
 

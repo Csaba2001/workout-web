@@ -29,6 +29,7 @@ function register(){
     $passwordConfirm = sanitize($_POST["registerPasswordConfirm"]);
     $userType = sanitize($_POST["registerUserType"]);
 
+
     if(!$firstname || strlen($firstname) < 3){
         json("First Name too short");
     }
@@ -59,6 +60,16 @@ function register(){
     }
     if($password !== $passwordConfirm){
         json("Passwords don't match");
+    }
+
+    if($userType === "trainer"){
+        $cv = sanitize($_POST["CV"]);
+        if(strlen($cv) < 20){
+            json("Tul rovid a CV");
+        }
+        if(strlen($cv) > 2000){
+            json("CV tul hosszu");
+        }
     }
 
     $hash = password_hash($password,PASSWORD_BCRYPT);
@@ -103,9 +114,10 @@ function register(){
             }else{ //trainer
                 $message .= '<p>A regisztracióját egy admin fogja elbirálni 24 órán belül.</p>
                              <p>Kérjük legyen türelemmel.</p>';
-                $sql = "INSERT INTO trainers (TrainerID) VALUES (:lastID);";
-                $query->prepare($sql);
+                $sql = "INSERT INTO trainers (TrainerID, CV, approval) VALUES (:lastID, :cv, 'pending');";
+                $query = $dbh->prepare($sql);
                 $query->bindParam(":lastID",$lastID);
+                $query->bindParam(":cv", $cv);
                 if($query->execute()){
                     if(sendMail($email, "Regisztracio igazolas", $message)){
                         json("Sikeres regisztracio", "ok");

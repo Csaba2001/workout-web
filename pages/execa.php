@@ -5,13 +5,12 @@ require_once("db_config.php");
 
 if(!isTrainer()){
     redirect("index.php?page=home");
-    die();
 }
 
 global $dbh;
 try {
-    $personId=$_SESSION['PersonID'];                                          //keresés yo skrill drop it hard
-    $sql = "SELECT ExerciseName, Description FROM exercises WHERE TrainerID=:ed;";
+    $personId=$_SESSION['PersonID'];
+    $sql = "SELECT * FROM exercises WHERE TrainerID=:ed;";
     $query = $dbh->prepare($sql);
     $query->bindParam(':ed', $personId);
     $query->execute();

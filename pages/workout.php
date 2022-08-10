@@ -5,7 +5,6 @@ require_once("db_config.php");
 
 if(!isLoggedIn()){
     redirect("index.php?page=home");
-    die();
 }
 global $dbh;
 
@@ -23,16 +22,19 @@ INNER JOIN persons ON trainings.TrainerID = persons.PersonID
 INNER JOIN trainers ON trainings.TrainerID = trainers.TrainerID
 WHERE persons.PersonID=:ed";
 $query = $dbh->prepare($sql);
-$query->bindParam(':ed', $asd, PDO::PARAM_STR);
+$query->bindParam(':ed', $asd, PDO::PARAM_STR);*/
 try {
+    $personId=$_SESSION['PersonID'];
+    $sql = "SELECT * FROM exercises WHERE TrainerID=:ed;";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':ed', $personId);
     $query->execute();
-    $results = $query->fetchAll();
+    $exercises = $query->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $error) {
     die($error);
 }
-    /*echo "<pre>";
-    var_dump($results);
-    echo "</pre>";*/
+
+$days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 ?>
 
 

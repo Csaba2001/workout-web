@@ -95,3 +95,14 @@ function ajax(e){
         }
     });
 }
+function trainerInput(checkElement, form){
+    let cvFormGroup = form.querySelector("#cvInput");
+    let cvInput = cvFormGroup.querySelector("textarea");
+    if(checkElement.checked){
+        cvFormGroup.style.display = "block";
+        cvInput.toggleAttribute("disabled");
+    }else{
+        cvFormGroup.style.display = "none";
+        cvInput.toggleAttribute("disabled");
+    }
+}

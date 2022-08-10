@@ -5,7 +5,6 @@ require_once("functions.php");
 
 if(!isTrainer()) {
     redirect("index.php?page=home");
-    die();
 }
 if (isPost() && !empty($_POST)) {
     addexercise();

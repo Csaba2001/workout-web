@@ -41,6 +41,16 @@ function login(){
         $query->execute();
         $results = $query->fetch(PDO::FETCH_ASSOC);
         if($results){
+            if($results["Rank"] === "trainer"){
+                $sql = "SELECT * FROM trainers WHERE TrainerID = ?;";
+                $query = $dbh->prepare($sql);
+                $query->bindParam(1,$results["PersonID"]);
+                $query->execute();
+                $trainerData = $query->fetch(PDO::FETCH_ASSOC);
+                if($trainerData["approval"] === "pending"){
+                    json("Az edzo profilja meg nem lett elbiralva, kerjuk legyen turelmes.");
+                }
+            }
             if(password_verify($password, $results['Hash'])){
                 if($results["Verified"] !== "verified"){
                     json("A felhasznalo nincs visszaigazolva kerjuk nezze meg az email fiokjat");
@@ -61,7 +71,7 @@ function login(){
             json("Cannot find user ".$email); //? nem tuntem e!
         }
     }catch(PDOException $e) {
-        json("SQL hiba tortent".$e->getMessage());
+        json("SQL hiba tortent: ".$e->getMessage());
     }
 }
 json("Empty request");
