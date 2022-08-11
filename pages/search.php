@@ -74,24 +74,30 @@ if(isPost()){
     }
 }
 ?>
-<div style="float: left;width: 60%">
-<form method="post" action="../index.php?page=workout" enctype="application/x-www-form-urlencoded">
-    <blockquote class="blockquote text-center"> <label for="categories"><h1>Category</h1></label></blockquote>
-    <select name="categories" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-        <option value="nocateg">Kategória</option>
-        <option value="weightloss">Fogyás</option>
-        <option value="cutting">Szálkásítás</option>
-        <option value="bulking">Erősítés</option>
-    </select>
-    <table>
-        <tr>
-            <div class="d-grid gap-2 col-6 mx-auto">
-                <br/><input type="submit" name="submit" id="submit" class="btn btn-secondary" type="button" value="Keresés"><br/>
-            </div>
-        </tr>
-    </table>
-</form>
+<div class="container d-flex flex-row justify-content-center">
+    <form class="m-3 d-flex flex-row" method="post" action="index.php?page=search" enctype="application/x-www-form-urlencoded">
+        <select id="category" name="category" class="form-select m-2">
+            <option>Kategória</option>
+            <option value="weightloss">Fogyás</option>
+            <option value="cutting">Szálkásítás</option>
+            <option value="bulking">Erősítés</option>
+        </select>
+    <?php if(isset($trainers) && !empty($trainers)) : ?>
+        <select id="trainer" name="trainer" class="form-select m-2">
+            <option>Edző</option>
+            <?php foreach($trainers as $trainer) : ?>
+                <option value="<?= $trainer["TrainerID"] ?>"><?= $trainer["FirstName"] ?> <?= $trainer["LastName"] ?> <?= $trainer["rating"] ?>/<?= $trainer["rated"] ?></option>
+            <?php endforeach; ?>
+        </select>
+    <?php endif; ?>
+            <input type="submit" class="btn btn-secondary m-2" value="Keresés"><br/>
+    </form>
+</div>
+<?php if(isset($error) && !empty($error)) : ?>
+    <div class="alert alert-danger mt-2" role="alert"><?= $error ?></div>
+<?php endif; ?>
 
+<?php if(!empty($results)) : ?>
 <div class="searchbar">
     <form method="post">
         <table class="table table-dark table-striped table-hover" style="text-align: center">

@@ -65,7 +65,7 @@ function login(){
                 $_SESSION = $results;
                 json("Successful login", "ok", ["redirect" => "index.php?page=home"]); //orulj neki (: szassz
             }else{
-                json("Buta fasz rossz jelszo"); //hmmm, hühh, kiugraszazablakonkitorlom
+                json("Rossz jelszo"); //hmmm, hühh, kiugraszazablakonkitorlom
             }
         }else{
             json("Cannot find user ".$email); //? nem tuntem e!
