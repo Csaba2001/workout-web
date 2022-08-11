@@ -18,7 +18,7 @@ try {
 } catch (PDOException $error) {
     die($error);
 }
-print_r($results);
+
 ?>
 
 <div class="container col-lg-4">
@@ -39,6 +39,22 @@ print_r($results);
         <input type="reset" class="btn btn-danger" value="Torles">
         <input type="submit" class="btn btn-primary" value="Letrehozas">
     </form>
+</div>
+<div class="container">
+    <?php foreach($results as $result) : ?>
+    <form action="exerciseModify.php" method="post" enctype="application/x-www-form-urlencoded" id="exercise<?= $result["ExerciseID"] ?>Form" name="exercise<?= $result["ExerciseID"] ?>Form" >
+        <input type="hidden" name="ExerciseID" id="ExerciseID" value="<?= $result["ExerciseID"] ?>">
+        <label for="ExerciseName" class="form-label">Gyakorlat</label>
+        <input type="text" class="form-control" id="ExerciseName" name="ExerciseName" value="<?= $result["ExerciseName"] ?>">
+
+        <label for="Description" class="form-label">Gyakorlat leirasa</label>
+        <textarea id="Description" class="form-control" name="Description"><?= $result["Description"] ?></textarea>
+
+        <div class="alert alert-danger mt-2" role="alert" style="display: none;"></div>
+        <input class="btn btn-secondary" type="submit" mod="Modosit" value="Modosit">
+        <input class="btn btn-danger" type="submit" mod="Torol" value="Torol">
+    </form>
+    <?php endforeach; ?>
 </div>
 
 <script src="scripts/forms.js"></script>

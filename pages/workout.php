@@ -40,7 +40,7 @@ $days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
 <?php if(isTrainer()) : //only trainer ?>
 <div class="searchbar" style="width: 100%; max-width: 100%;">
-    <?php if(isset($exercises) && !empty($exercises)): ?>
+    <?php if(!empty($exercises)): ?>
     <form id="newTrainingForm" name="newTrainingForm" action="newtraining.php" method="post" enctype="application/x-www-form-urlencoded">
         <table class="table table-sm table-dark table-striped" style="text-align: center;">
             <thead>
@@ -86,6 +86,7 @@ $days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
                 </tr>
             </tbody>
         </table>
+        <div class="alert alert-danger mt-2" role="alert" style="display: none;"></div>
     </form>
     <?php else : ?>
     <span>Nincs egy gyakorlata sem, keszitsen parat...</span>

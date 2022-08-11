@@ -5,7 +5,7 @@ window.addEventListener("load", function(){
     }
 });
 function getInputs(form){
-    let inputs = form.querySelectorAll('input:not([type=submit],[type=reset]), textarea');
+    let inputs = form.querySelectorAll('input:not([type=submit],[type=reset]), textarea, select');
     return inputs;
 }
 function getInputForms(form){
@@ -69,10 +69,13 @@ function ajax(e){
     let form = e.target;
     let inputs = getInputs(form);
 
-    clearAlert(form);
-    clearErrors(form, getInputForms(form));
+    //clearAlert(form);
+    //clearErrors(form, getInputForms(form));
 
     let data = getData(inputs);
+    if(e.submitter.getAttribute("mod")){
+        data.mod = e.submitter.getAttribute("mod");
+    }
     console.log("data:");
     console.log(data);
 

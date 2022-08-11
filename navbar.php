@@ -10,16 +10,17 @@
                     <a class="nav-link" href="index.php?page=home">Kezdőlap</a>
                 </li>
                 <?php if(isLoggedIn()): ?><!-- user, trainer, admin -->
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=search">Edzéstervek</a>
-                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=workout">Edzés létrehozása</a>
                 </li>
-
-                <?php if(isTrainer()) : ?><!-- for trainers,    other auths: user, trainer, admin -->
+                <?php if(isUser()) : ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=execa">Gyakorlat létrehozása</a>
+                    <a class="nav-link" href="index.php?page=search">Edzéstervek</a>
+                </li>
+                <?php elseif(isTrainer()) : ?><!-- for trainers,    other auths: user, trainer, admin -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?page=execa">Gyakorlatok</a>
                 </li>
                 <?php elseif(isAdmin()) : ?><!-- admin -->
                 <li class="nav-item">

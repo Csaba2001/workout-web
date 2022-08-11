@@ -29,7 +29,11 @@ function addexercise(){
         $query->bindParam(':en', $exerciseName);
         $query->bindParam(':dc', $description);
         $query->bindParam(':tid', $trainerID);
-        $query->execute();
+        if($query->execute()){
+            json("Sikeres gyakorlat letrehozas","ok");
+        }else{
+            json("Hiba tortent");
+        }
     } catch (PDOException $error) {
         die($error);
     }
