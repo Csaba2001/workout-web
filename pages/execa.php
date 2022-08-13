@@ -23,7 +23,7 @@ try {
 
 <div class="container col-lg-4">
     <h2>Uj gyakorlat letrehozasa</h2>
-    <form method="post" action="newexercise.php" enctype="application/x-www-form-urlencoded">
+    <form ajax method="post" action="newexercise.php" enctype="application/x-www-form-urlencoded">
         <div class="mb-3">
             <label for="ExerciseName" class="form-label">Gyakorlat</label>
             <input type="text" class="form-control" id="ExerciseName" name="ExerciseName">
@@ -42,7 +42,7 @@ try {
 </div>
 <div class="container">
     <?php foreach($results as $result) : ?>
-    <form action="exerciseModify.php" method="post" enctype="application/x-www-form-urlencoded" id="exercise<?= $result["ExerciseID"] ?>Form" name="exercise<?= $result["ExerciseID"] ?>Form" >
+    <form ajax action="exerciseModify.php" method="post" enctype="application/x-www-form-urlencoded" id="exercise<?= $result["ExerciseID"] ?>Form" name="exercise<?= $result["ExerciseID"] ?>Form" >
         <input type="hidden" name="ExerciseID" id="ExerciseID" value="<?= $result["ExerciseID"] ?>">
         <label for="ExerciseName" class="form-label">Gyakorlat</label>
         <input type="text" class="form-control" id="ExerciseName" name="ExerciseName" value="<?= $result["ExerciseName"] ?>">

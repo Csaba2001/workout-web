@@ -19,7 +19,11 @@ if (isPost() && !empty($_POST)) {
 
 function addtraining(){
     global $dbh;
-    $trainerID = $_SESSION['Rank']==="trainer"?$_SESSION['PersonID']:0;
+    if(isTrainer()){
+        $trainerID = $_SESSION["PersonID"];
+    }else{
+        $trainerID = 0;
+    }
     $category = sanitize($_POST['trainingCategory']);
     $description = sanitize($_POST['description']);
     $mon = sanitize($_POST['Mon']);
@@ -73,7 +77,6 @@ function addtraining(){
             }
         }
 
-
         $sql = "INSERT INTO trainings (TrainerID, Category, description, Mon, Tue, Wed, Thu, Fri, Sat, Sun) VALUES (:tid,:ctg,:dsc,:mon,:tue,:wed,:thu,:fri,:sat,:sun)";
         $query = $dbh->prepare($sql);
         $query->bindParam(':tid', $trainerID);
@@ -87,9 +90,19 @@ function addtraining(){
         $query->bindParam(':sat', $sat);
         $query->bindParam(':sun', $sun);
         if($query->execute()){
-            json("Sikeres edezterv letrehozas","ok");
+            if(isUser()){
+                $trainingID = $dbh->lastInsertId();
+                $sql = "INSERT INTO persons_trainings (PersonID, TrainingID) VALUES (:pid, :tid);";
+                $query = $dbh->prepare($sql);
+                $query->bindParam(':pid', $_SESSION["PersonID"]);
+                $query->bindParam(':tid', $trainingID);
+                $query->execute();
+                json("Sikeresen létrehozta az edzéstervet, automatikusan fel is lett véve","ok");
+            }else {
+                json("Sikeresen létrehozta az edzéstervet", "ok");
+            }
         }else{
-            json("Sikertelen muvelet");
+            json("Sikertelen művelet");
         }
     } catch (PDOException $error) {
         die($error);

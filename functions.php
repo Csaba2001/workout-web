@@ -1,6 +1,24 @@
 <?php
 @define("SECRET", "eperfa28ha3");
 require_once("db_config.php");
+
+$days = [
+    "Mon" => "Hétfő",
+    "Tue" => "Kedd",
+    "Wed" => "Szerda",
+    "Thu" => "Csütörtök",
+    "Fri" => "Péntek",
+    "Sat" => "Szombat",
+    "Sun" => "Vasárnap"
+];
+
+$categories = [
+    "weightloss" => "Fogyás",
+    "cutting" => "Szálkásítás",
+    "bulking" => "Erősítés"
+];
+
+
 function redirect($URL){
     header("Location: $URL");
     echo "<script>window.location.href = '$URL';</script>";
@@ -52,4 +70,43 @@ function logout(){
     unset($_SESSION);
     session_destroy();
     redirect("index.php?page=home");
+}
+function getExercises(){
+    global $dbh;
+    $query = "";
+    $results = "";
+    try {
+        if(isTrainer()){
+            $trainerID = $_SESSION["PersonID"];
+            $sql = "SELECT * FROM exercises WHERE TrainerID IN (:ed, 0);";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':ed', $trainerID);
+        }elseif(isUser()){
+            $sql = "SELECT * FROM exercises;";
+            $query = $dbh->prepare($sql);
+        }
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+    }catch(Exception $e){
+        throw new Exception("SQL error: ".$e->getMessage());
+    }finally{
+        return $results;
+    }
+}
+function getTrainingsFromTrainingID($trainingID){
+    global $dbh;
+    $results = false;
+    try {
+        $sql = "SELECT * FROM trainings WHERE TrainingID = :tid;";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':tid', $trainingID);
+
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    }catch(Exception $e){
+        throw new Exception("SQL error: ".$e->getMessage());
+    }finally{
+        return $results;
+    }
 }

@@ -1,5 +1,5 @@
 window.addEventListener("load", function(){
-    let forms = document.forms;
+    let forms = document.querySelectorAll("form[ajax]");
     for(let i = 0; i < forms.length; i++){
         forms[i].addEventListener("submit", ajax); //
     }
@@ -29,10 +29,14 @@ function getData(inputs){
 }
 function setAlert(form, errorStr){
     let alertDiv = form.querySelector("div.alert");
-    alertDiv.style.display = "block";
-    alertDiv.classList.remove("alert-success");
-    alertDiv.classList.add("alert-danger");
-    alertDiv.innerHTML = errorStr;
+    try {
+        alertDiv.style.display = "block";
+        alertDiv.classList.remove("alert-success");
+        alertDiv.classList.add("alert-danger");
+        alertDiv.innerHTML = errorStr;
+    }catch (e) {
+        console.log(e);
+    }
 }
 function clearAlert(form){
     let alertDiv = form.querySelector("div.alert");
@@ -57,11 +61,15 @@ function success(form, successStr){
     for(let i = 0; i < inputs.length; i++){
         inputs[i].classList.add("is-valid");
     }
+    try{
     let alertDiv = form.querySelector("div.alert");
     alertDiv.style.display = "block";
     alertDiv.classList.remove("alert-danger");
     alertDiv.classList.add("alert-success");
     alertDiv.innerHTML = successStr;
+    }catch (e) {
+        console.log(e);
+    }
 }
 
 function ajax(e){

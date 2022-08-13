@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="border-bottom: 1px solid #d3d3d3;">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -62,7 +62,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Megsem"></button>
             </div>
             <div class="modal-body">
-                <form id="forgotPasswordModalForm" action="forgot.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
+                <form ajax id="forgotPasswordModalForm" action="forgot.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="forgotEmail" name="forgotEmail" placeholder="name@example.com">
                         <label for="floatingInput">Email cím</label>
@@ -96,7 +96,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Megsem"></button>
             </div>
             <div class="modal-body">
-                <form id="loginModalForm" action="login.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
+                <form ajax id="loginModalForm" action="login.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="loginEmail" name="loginEmail" placeholder="name@example.com">
                         <label for="floatingInput">Email cím</label>
@@ -126,7 +126,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Bezar"></button>
             </div>
             <div class="modal-body">
-                <form id="registerModalForm" action="register.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
+                <form ajax id="registerModalForm" action="register.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="registerFirstName" name="registerFirstName" placeholder="Janos">
                         <label for="registerFirstName">Név</label>

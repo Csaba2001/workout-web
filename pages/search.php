@@ -6,12 +6,17 @@ require_once("functions.php");
 if(!isUser()){
     redirect("index.php?page=home");
 }
+
 global $dbh;
+global $days;
+global $categories;
+
 $trainers = [];
 $results = [];
+$error = "";
 
 try {
-    $sql = "SELECT DISTINCT(trainings.TrainerID), trainers.rating, trainers.rated, persons.FirstName, persons.LastName FROM trainings INNER JOIN persons ON trainings.TrainerID = persons.PersonID INNER JOIN trainers ON trainings.TrainerID = trainers.TrainerID;";
+    $sql = "SELECT DISTINCT(trainings.TrainerID), trainers.rating, trainers.rated, persons.FirstName, persons.LastName FROM trainings INNER JOIN persons ON trainings.TrainerID = persons.PersonID INNER JOIN trainers ON trainings.TrainerID = trainers.TrainerID WHERE trainings.TrainerID <> 0;";
     $query = $dbh->prepare($sql);
     $query->execute();
     $trainers = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -22,22 +27,31 @@ try {
 if(isPost()){
     $category = sanitize($_POST['category']);
     $trainer = sanitize($_POST['trainer']);
+    searchForTraining($category, $trainer);
+}else{
+    searchForTraining();
+}
 
-    $categories = [
-        "weightloss",
-        "cutting",
-        "bulking"
-    ];
-    if(!in_array($category,$categories)){
+//$exercises = getExercises();
+
+function searchForTraining($category = null, $trainer = null){
+    global $dbh;
+    global $trainers;
+    global $results;
+    global $error;
+    global $categories;
+
+    if(!array_key_exists($category,$categories)){
         $category = null;
     }
 
-    if(!in_array($trainer, $trainers)){
+    if(!in_array($trainer, array_column($trainers, 'TrainerID'))){
         $trainer = null;
     }
+    $personID = $_SESSION["PersonID"];
 
     try {
-        $sql = "SELECT trainings.Category, trainings.description as Description, persons.FirstName, trainers.rating, t1.ExerciseName as Mon, t2.ExerciseName as Tue, t3.ExerciseName as Wed, t4.ExerciseName as Thu, t5.ExerciseName as Fri, t6.ExerciseName as Sat, t7.ExerciseName as Sun, trainings.TrainingID
+        $sql = "SELECT trainings.TrainerID, persons_trainings.PersonID, trainings.Category, trainings.picked, trainings.description as description, persons.FirstName, trainers.rating, t1.ExerciseName as Mon, t2.ExerciseName as Tue, t3.ExerciseName as Wed, t4.ExerciseName as Thu, t5.ExerciseName as Fri, t6.ExerciseName as Sat, t7.ExerciseName as Sun, trainings.TrainingID
         FROM trainings 
         LEFT JOIN exercises t1 ON trainings.Mon=t1.ExerciseID
         LEFT JOIN exercises t2 ON trainings.Tue=t2.ExerciseID
@@ -46,15 +60,25 @@ if(isPost()){
         LEFT JOIN exercises t5 ON trainings.Fri=t5.ExerciseID
         LEFT JOIN exercises t6 ON trainings.Sat=t6.ExerciseID
         LEFT JOIN exercises t7 ON trainings.Sun=t7.ExerciseID
-        INNER JOIN persons ON trainings.TrainerID = persons.PersonID
-        INNER JOIN trainers ON trainings.TrainerID = trainers.TrainerID";
+        LEFT JOIN persons ON trainings.TrainerID = persons.PersonID
+        LEFT JOIN trainers ON trainings.TrainerID = trainers.TrainerID
+        LEFT JOIN persons_trainings ON trainings.TrainingID = persons_trainings.TrainingID WHERE ";
+        $ext = "";
         if($category){
-            $sql .= " WHERE trainings.Category=:category";
-
+            $ext .= " trainings.Category=:category";
         }
+        if($category && !$trainer){
+            $ext .= " AND trainings.TrainerID <> 0";
+        }
+        if(!$category && !$trainer){
+            $ext .= " trainings.TrainerID <> 0";
+        }
+        if($category && $trainer)$ext .= " AND";
         if($trainer){
-            $sql .= " WHERE trainings.TrainerID = :trainerID";
+            $ext .= " trainings.TrainerID IN(:trainerID) <> 0";
         }
+        $ext .= " AND persons_trainings.PersonID IS NULL AND trainings.status = 'active'";
+        $sql .= $ext;
 
         $query = $dbh->prepare($sql);
 
@@ -66,11 +90,12 @@ if(isPost()){
         }
         $query->execute();
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
+
         if(empty($results)){
-            $error = "Nincs talalat";
+            $error = "Nincs találat";
         }
     }catch(PDOException $e){
-        $error = "Hiba tortent".$e->getMessage(); //vedd ki vegen
+        $error = "Hiba történt".$e->getMessage(); //vedd ki vegen
     }
 }
 ?>
