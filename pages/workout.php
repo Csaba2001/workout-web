@@ -25,15 +25,7 @@ $query = $dbh->prepare($sql);
 $query->bindParam(':ed', $asd, PDO::PARAM_STR);*/
 if(isTrainer()) {
     try {
-        $personId=$_SESSION['PersonID'];
-        $sql="";
-        $sql = "SELECT * FROM exercises WHERE TrainerID IN (:ed, 0);";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':ed', $personId);
-        $query->execute();
-        $exercises = $query->fetchAll(PDO::FETCH_ASSOC);
-
-        $sql = "SELECT trainings.Category, persons.FirstName, trainers.rating, trainings.description as Description, t1.ExerciseName as Mon, t2.ExerciseName as Tue, t3.ExerciseName as Wed, t4.ExerciseName as Thu, t5.ExerciseName as Fri, t6.ExerciseName as Sat, t7.ExerciseName as Sun, trainings.TrainingID, persons.PersonID
+        $sql = "SELECT trainings.Category, persons.FirstName, trainings.picked, trainings.status, trainings.description as description, t1.ExerciseName as Mon, t2.ExerciseName as Tue, t3.ExerciseName as Wed, t4.ExerciseName as Thu, t5.ExerciseName as Fri, t6.ExerciseName as Sat, t7.ExerciseName as Sun, trainings.TrainingID, persons.PersonID
         FROM trainings 
         LEFT JOIN exercises t1 ON trainings.Mon=t1.ExerciseID
         LEFT JOIN exercises t2 ON trainings.Tue=t2.ExerciseID
@@ -126,41 +118,4 @@ $days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
     <?php endif; ?>
 </div>
 
-<table class="table table-small table-dark table-striped" style=" text-align: center;" >
-    <tr>
-        <th scope="col">Kategória</th>
-        <th scope="col">Edzés leírása</th>
-        <th scope="col">Hétfő</th>
-        <th scope="col">Kedd</th>
-        <th scope="col">Szerda</th>
-        <th scope="col">Csütörtök</th>
-        <th scope="col">Péntek</th>
-        <th scope="col">Szombat</th>
-        <th scope="col">Vasárnap</th>
-        <th scope="col">Értékelés</th>
-        <th scope="col">&nbsp;Törlés</th>
-    </tr>
-    <?php
-        if(isset($results)) :
-            foreach ($results as $result) : ?>
-                <tr>
-                    <td><?= $result["Category"] ?></td>
-                    <td><?= $result["Description"] ?></td>
-                    <td><?= $result["Mon"] ?></td>
-                    <td><?= $result["Tue"] ?></td>
-                    <td><?= $result["Wed"] ?></td>
-                    <td><?= $result["Thu"] ?></td>
-                    <td><?= $result["Fri"] ?></td>
-                    <td><?= $result["Sat"] ?></td>
-                    <td><?= $result["Sun"] ?></td>
-                    <td><?= $result["rating"] ?></td>
-                    <td><form><input type="hidden" name="TrainingID" id="TrainingID" value="<?= $result["TrainingID"] ?>"><input type="submit" class="btn btn-danger" value="Torles"></form></td>
-                </tr>
-            <?php endforeach; else : ?>
-            <tr>
-                <td colspan=\"8\">Nincs egy gyakorlata sem, keszitsen parat...</td>
-            </tr>
-        <?php endif; ?>
-</table>
-<?php //endif; ?>
 <script src="scripts/forms.js"></script>

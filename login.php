@@ -63,12 +63,12 @@ function login(){
                 $query->bindParam(":email",$email);
                 $query->execute();
                 $_SESSION = $results;
-                json("Successful login", "ok", ["redirect" => "index.php?page=home"]); //orulj neki (: szassz
+                json("Successful login", "ok", ["redirect" => "index.php?page=home"]);
             }else{
-                json("Rossz jelszo"); //hmmm, hühh, kiugraszazablakonkitorlom
+                json("Rossz jelszo");
             }
         }else{
-            json("Cannot find user ".$email); //? nem tuntem e!
+            json("Cannot find user ".$email);
         }
     }catch(PDOException $e) {
         json("SQL hiba tortent: ".$e->getMessage());

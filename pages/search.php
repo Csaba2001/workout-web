@@ -74,63 +74,75 @@ if(isPost()){
     }
 }
 ?>
-<div class="container d-flex flex-row justify-content-center">
-    <form class="m-3 d-flex flex-row" method="post" action="index.php?page=search" enctype="application/x-www-form-urlencoded">
-        <select id="category" name="category" class="form-select m-2">
-            <option>Kategória</option>
-            <option value="weightloss">Fogyás</option>
-            <option value="cutting">Szálkásítás</option>
-            <option value="bulking">Erősítés</option>
-        </select>
-    <?php if(isset($trainers) && !empty($trainers)) : ?>
-        <select id="trainer" name="trainer" class="form-select m-2">
-            <option>Edző</option>
-            <?php foreach($trainers as $trainer) : ?>
-                <option value="<?= $trainer["TrainerID"] ?>"><?= $trainer["FirstName"] ?> <?= $trainer["LastName"] ?> <?= $trainer["rating"] ?>/<?= $trainer["rated"] ?></option>
-            <?php endforeach; ?>
-        </select>
-    <?php endif; ?>
+
+<div class="d-flex flex-column">
+    <div class="container d-flex flex-row justify-content-center">
+        <form class="m-3 d-flex flex-row" method="post" action="index.php?page=search" enctype="application/x-www-form-urlencoded">
+            <select id="category" name="category" class="form-select m-2">
+                <option>Kategória</option>
+                <option value="weightloss">Fogyás</option>
+                <option value="cutting">Szálkásítás</option>
+                <option value="bulking">Erősítés</option>
+            </select>
+            <?php if(isset($trainers) && !empty($trainers)) : ?>
+                <select id="trainer" name="trainer" class="form-select m-2">
+                    <option>Edző</option>
+                    <?php foreach($trainers as $trainer) : ?>
+                    <option value="<?= $trainer["TrainerID"] ?>"><?= $trainer["FirstName"] ?> <?= $trainer["LastName"] ?> <?= $trainer["rating"] ?>/<?= $trainer["rated"] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endif; ?>
             <input type="submit" class="btn btn-secondary m-2" value="Keresés"><br/>
-    </form>
-</div>
-<?php if(isset($error) && !empty($error)) : ?>
-    <div class="alert alert-danger mt-2" role="alert"><?= $error ?></div>
-<?php endif; ?>
+        </form>
+    </div>
 
-<?php if(!empty($results)) : ?>
-<div class="searchbar">
-    <form method="post">
-        <table class="table table-dark table-striped table-hover" style="text-align: center">
-            <tr>
-                <th scope="col">Kategória</th>
-                <th scope="col">Edző</th>
-                <th scope="col">Edzés leírása</th>
-                <th scope="col">Hétfő</th>
-                <th scope="col">Kedd</th>
-                <th scope="col">Szerda</th>
-                <th scope="col">Csütörtök</th>
-                <th scope="col">Péntek</th>
-                <th scope="col">Szombat</th>
-                <th scope="col">Vasárnap</th>
-                <th scope="col">Értékelés</th>
-            </tr>
-            <?php foreach ($results as $result) : ?>
-            <tr>
-                <td><?= $result["Category"] ?></td>
-                <td><?= $result["FirstName"] ?></td>
-                <td><?= $result["Description"] ?></td>
-                <td><?= $result["Mon"] ?></td>
-                <td><?= $result["Tue"] ?></td>
-                <td><?= $result["Wed"] ?></td>
-                <td><?= $result["Thu"] ?></td>
-                <td><?= $result["Fri"] ?></td>
-                <td><?= $result["Sat"] ?></td>
-                <td><?= $result["Sun"] ?></td>
-                <td><?= $result["rating"] ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
-    </form>
-</div>
-<?php endif; ?>
+    <?php if(isset($error) && !empty($error)) : ?>
+    <div class="alert alert-danger m-3" role="alert"><?= $error ?></div>
+    <?php endif; ?>
 
+    <div class="d-flex flex-column">
+        <?php if(!empty($results)) : ?>
+        <div class="container">
+            <h3 class="me-auto p-4 pb-0">Talalatok</h3>
+            <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 g-4 m-2">
+                <?php foreach($results as $result) : ?>
+                    <div class="col">
+                        <div class="card rounded-0">
+                            <div class="card-header rounded-0 text-bg-primary">
+                                Aktív
+                            </div>
+                            <div class="card-body p-0">
+                                <h5 class="card-title ps-3 pt-3 pe-3"><?= $result["description"] ?></h5>
+                                <h6 class="card-subtitle mb-2 text-muted ps-3 pe-3">
+                                    edző: <?= $result["FirstName"] ?><br>
+                                    kategória: <?= $categories[$result["Category"]] ?><br>
+                                    népszerűség: <?= $result["picked"] ?>
+                                </h6>
+                                <ul class="list-group border-0 bg-transparent" >
+                                    <?php foreach($days as $day => $dayHun) : ?>
+                                        <li class="list-group-item bg-transparent border border-0 <?php $dayofweek = date("D",time()); if($day == $dayofweek) echo "active"; ?>">
+                                            <div class="form-floating">
+                                                <input type="text" readonly class="form-control-plaintext ps-2 pe-0" id="<?= $day ?>" value="<?= $result[$day] ?>">
+                                                <label style="color: black;" class="ps-0 pe-0" for="<?= $day ?>"><?= $dayHun ?></label>
+                                            </div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <form id="takeTrainingForm" name="takeTrainingForm" action="takeTraining.php" method="post" enctype="application/x-www-form-urlencoded">
+                                    <div class="d-flex flex-row">
+                                        <input type="hidden" name="TrainingID" id="TrainingID" value="<?= $result["TrainingID"] ?>">
+                                        <input class="btn btn-success rounded-0 flex-grow-1" type="submit" value="Felvesz">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+    </div>
+
+</div>
+
+<script type="application/javascript" src="scripts/forms.js"></script>
