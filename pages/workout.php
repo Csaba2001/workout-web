@@ -44,7 +44,7 @@ if(isUser()){
         $query->execute();
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        $sql = "SELECT trainings.* FROM trainings INNER JOIN persons_trainings ON persons_trainings.TrainingID = trainings.TrainingID WHERE persons_trainings.PersonID = :pid;";
+        $sql = "SELECT persons.FirstName, trainings.* FROM trainings INNER JOIN persons_trainings ON persons_trainings.TrainingID = trainings.TrainingID INNER JOIN persons ON trainings.TrainerID = persons.PersonID WHERE persons_trainings.PersonID = :pid AND TrainerID <> 0;";
         $query = $dbh->prepare($sql);
         $query->bindParam(':pid', $personId);
         $query->execute();
@@ -113,7 +113,6 @@ if(isUser()){
         </div>
     </div>
     <?php endif; ?>
-
 
     <div class="container">
         <h3 class="me-auto p-4 pb-0">Edzéstervek</h3>
@@ -209,8 +208,8 @@ if(isUser()){
                     <label for="<?= $day ?>"><?= $dayHun ?></label>
                 </div>
             <?php endforeach; ?>
-            <input type="reset" class="btn btn-danger" value="Töröl">
             <input type="submit" class="btn btn-primary" value="Létrehoz">
+            <input type="reset" class="btn btn-secondary" value="Mégsem">
             <div class="alert alert-danger mt-2" role="alert" style="display: none;"></div>
         </form>
         <?php else : ?>

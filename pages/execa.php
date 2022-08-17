@@ -2,12 +2,15 @@
 @session_start();
 require_once("functions.php");
 require_once("db_config.php");
+require_once("User.php");
+require_once("Trainer.php");
 
-if(!isTrainer()){
+if(!$user->isTrainer()){
     redirect("index.php?page=home");
 }
 
 global $dbh;
+global $categories;
 try {
     $personId=$_SESSION['PersonID'];
     $sql = "SELECT * FROM exercises WHERE TrainerID=:ed;";
@@ -36,8 +39,8 @@ try {
 
         <div class="alert alert-danger mt-2" role="alert" style="display: none;"></div>
 
-        <input type="reset" class="btn btn-danger" value="Torles">
         <input type="submit" class="btn btn-primary" value="Letrehozas">
+        <input class="btn btn-secondary" type="reset" value="Megsem">
     </form>
 </div>
 <div class="container">
@@ -51,7 +54,7 @@ try {
         <textarea id="Description" class="form-control" name="Description"><?= $result["Description"] ?></textarea>
 
         <div class="alert alert-danger mt-2" role="alert" style="display: none;"></div>
-        <input class="btn btn-secondary" type="submit" mod="Modosit" value="Modosit">
+        <input class="btn btn-primary" type="submit" mod="Modosit" value="Modosit">
         <input class="btn btn-danger" type="submit" mod="Torol" value="Torol">
     </form>
     <?php endforeach; ?>

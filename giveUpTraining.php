@@ -13,31 +13,35 @@ if(!$user->isUser()){
 global $dbh;
 
 if(isPost() && !empty($_POST)){
-    takeTraining();
+    giveUpTraining();
 }else{
     try {
         $_POST = json_decode(file_get_contents("php://input"), true);
-        takeTraining();
+        giveUpTraining();
     }catch(Exception $e){
         json("Not a POST request");
     }
 }
 
-function takeTraining(){
+function giveUpTraining(){
     global $dbh;
+    $user = new User();
+    $user = User::getCurrentUser();
+
     $trainingID = sanitize($_POST["TrainingID"]);
-    $personID = $_SESSION["PersonID"];
+    $personID = $user->PersonID;
 
     try {
         if (!getTrainingsFromTrainingID($trainingID)) {
-            json("Training doesn't exist");
+            json("Nincs ilyen edzesterv");
         }
-        $sql = "INSERT INTO persons_trainings (PersonID, TrainingID) VALUES (:pid, :tid);";
+        $sql = "DELETE FROM persons_trainings WHERE PersonID = :pid AND TrainingID = :tid;";
         $query = $dbh->prepare($sql);
         $query->bindParam(":pid", $personID);
         $query->bindParam(":tid", $trainingID);
         if($query->execute()){
-            json("Sikeresen felvetted az edzestervet", "ok",["redirect" => "index.php?page=workout"]);
+            setAlert("Sikeresen leadta az edzestervet","success");
+            json("Sikeresen leadta az edzestervet", "ok",["redirect" => "index.php?page=workout"]);
         }else{
             json("Sikertelen muvelet");
         }

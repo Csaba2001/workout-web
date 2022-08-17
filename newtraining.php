@@ -2,8 +2,10 @@
 @session_start();
 require_once("db_config.php");
 require_once("functions.php");
+require_once("User.php");
+require_once("Trainer.php");
 
-if(!isLoggedIn()) {
+if(!User::getCurrentUser()) {
     redirect("index.php?page=home");
 }
 if (isPost() && !empty($_POST)) {
@@ -19,8 +21,10 @@ if (isPost() && !empty($_POST)) {
 
 function addtraining(){
     global $dbh;
-    if(isTrainer()){
-        $trainerID = $_SESSION["PersonID"];
+    $user = new User();
+    $user = User::getCurrentUser();
+    if($user->isTrainer()){
+        $trainerID = $user->PersonID;
     }else{
         $trainerID = 0;
     }

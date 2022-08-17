@@ -2,10 +2,7 @@
 @session_start();
 require_once("db_config.php");
 require_once("functions.php");
-
-if(isLoggedIn()) {
-    logout();
-}
+require_once("User.php");
 
 if (isPost() && !empty($_POST)) {
     resetPassword();
