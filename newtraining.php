@@ -54,21 +54,16 @@ function addtraining(){
 
 
     try {
-        $sql = "SELECT Rank FROM persons WHERE PersonID = :pid;";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':pid', $trainerID);
-        $query->execute();
-        $person = $query->fetch(PDO::FETCH_ASSOC);
         $exercises = [];
 
-        if($person["Rank"] === "trainer"){
+        if($user->isTrainer()){
             $sql = "SELECT ExerciseID FROM exercises WHERE TrainerID IN (:ed, 0);";
             $query = $dbh->prepare($sql);
             $query->bindParam(':ed', $trainerID);
             $query->execute();
             $exercises = $query->fetchAll(PDO::FETCH_ASSOC);
         }
-        if($person["Rank"] === "user"){
+        if($user->isUser()){
             $sql = "SELECT * FROM exercises;";
             $query = $dbh->prepare($sql);
             $query->execute();
@@ -94,16 +89,18 @@ function addtraining(){
         $query->bindParam(':sat', $sat);
         $query->bindParam(':sun', $sun);
         if($query->execute()){
-            if(isUser()){
+            if($user->isUser()){
                 $trainingID = $dbh->lastInsertId();
                 $sql = "INSERT INTO persons_trainings (PersonID, TrainingID) VALUES (:pid, :tid);";
                 $query = $dbh->prepare($sql);
-                $query->bindParam(':pid', $_SESSION["PersonID"]);
+                $query->bindParam(':pid', $user->PersonID);
                 $query->bindParam(':tid', $trainingID);
                 $query->execute();
-                json("Sikeresen létrehozta az edzéstervet, automatikusan fel is lett véve","ok");
+                setAlert("Sikeresen létrehozta az edzéstervet, automatikusan fel is lett véve","success");
+                json("Sikeresen létrehozta az edzéstervet, automatikusan fel is lett véve","ok",["redirect" => "index.php?page=workout"]);
             }else {
-                json("Sikeresen létrehozta az edzéstervet", "ok");
+                setAlert("Sikeresen létrehozta az edzéstervet","success");
+                json("Sikeresen létrehozta az edzéstervet", "ok",["redirect" => "index.php?page=workout"]);
             }
         }else{
             json("Sikertelen művelet");

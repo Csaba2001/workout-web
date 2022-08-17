@@ -2,8 +2,12 @@
 @session_start();
 require_once("db_config.php");
 require_once("functions.php");
+require_once("User.php");
+require_once("Trainer.php");
 
-if(!isTrainer()) {
+$user = new User();
+$user = User::getCurrentUser();
+if(!$user->isTrainer()) {
     redirect("index.php?page=home");
 }
 if (isPost() && !empty($_POST)) {
@@ -22,6 +26,13 @@ function addexercise(){
     $exerciseName = sanitize($_POST["ExerciseName"]);
     $description = sanitize($_POST["Description"]);
     $trainerID = $_SESSION['PersonID'];
+
+    if(strlen($exerciseName) < 4){
+        json("Rovid nev");
+    }
+    if(strlen($description)<5){
+        json("Rovid leiras");
+    }
 
     try {
         $sql = "INSERT INTO exercises (ExerciseName, Description, TrainerID) VALUES (:en,:dc,:tid)";

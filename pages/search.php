@@ -2,8 +2,11 @@
 @session_start();
 require_once("db_config.php");
 require_once("functions.php");
+require_once("User.php");
 
-if(!isUser()){
+$user = new User();
+$user = User::getCurrentUser();
+if(!$user->isUser()){
     redirect("index.php?page=home");
 }
 
@@ -153,7 +156,7 @@ function searchForTraining($category = null, $trainer = null){
                                         </li>
                                     <?php endforeach; ?>
                                 </ul>
-                                <form id="takeTrainingForm" name="takeTrainingForm" action="takeTraining.php" method="post" enctype="application/x-www-form-urlencoded">
+                                <form ajax id="takeTrainingForm" name="takeTrainingForm" action="takeTraining.php" method="post" enctype="application/x-www-form-urlencoded">
                                     <div class="d-flex flex-row">
                                         <input type="hidden" name="TrainingID" id="TrainingID" value="<?= $result["TrainingID"] ?>">
                                         <input class="btn btn-success rounded-0 flex-grow-1" type="submit" value="Felvesz">

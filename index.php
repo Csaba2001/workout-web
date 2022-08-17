@@ -1,8 +1,19 @@
 <?php
 session_start();
 include("functions.php");
+include("User.php");
+include("Trainer.php");
 
-
+//var_dump($_SESSION);
+$user = new User();
+if($user = User::getCurrentUser()){
+    $user->set(User::getCurrentUser());
+    if($user->isTrainer()){
+        $trainer = new Trainer();
+        $trainer = $trainer::getFromID($user->PersonID);
+    }
+}
+//var_dump($user);
 ?>
 <!DOCTYPE html>
 <html lang="hu">
@@ -16,32 +27,51 @@ include("functions.php");
     <script type="application/javascript" src="scripts/shared.js"></script>
 </head>
 <body>
-    <?php
-    include("navbar.php");
+<?php
+if(isset($_SESSION["alert"])): ?>
+<div class="toast-container p-3 position-fixed bottom-0 start-0">
+    <div id="toastAlert" class="toast align-items-center text-bg-<?= $_SESSION["alert"]["type"] ?> border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <?= $_SESSION["alert"]["message"] ?>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<script>
+    const toastLiveExample = $('toastAlert');
+    const toast = new bootstrap.Toast(toastLiveExample);
+    toast.show();
+</script>
 
-    if(!isset($_GET["page"])){
-        redirect("index.php?page=home");
-    }else{
-        $page = sanitize($_GET["page"]);
-        switch($page){
-            case "execa":
-                include("pages/execa.php");
-                break;
-            case "search":
-                include("pages/search.php");
-                break;
-            case "profile":
-                include("pages/profile.php");
-                break;
-            case "workout":
-                include("pages/workout.php");
-                break;
-            case "home":
-            default:
-                include("pages/home.php");
-                break;
-        }
+<?php clearAlert(); endif;
+
+include("navbar.php");
+
+if(!isset($_GET["page"])){
+    redirect("index.php?page=home");
+}else{
+    $page = sanitize($_GET["page"]);
+    switch($page){
+        case "execa":
+            include("pages/execa.php");
+            break;
+        case "search":
+            include("pages/search.php");
+            break;
+        case "profile":
+            include("pages/profile.php");
+            break;
+        case "workout":
+            include("pages/workout.php");
+            break;
+        case "home":
+        default:
+            include("pages/home.php");
+            break;
     }
-    ?>
+}
+?>
 </body>
 </html>

@@ -9,20 +9,20 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=home">Kezdőlap</a>
                 </li>
-                <?php if(isLoggedIn()): ?><!-- user, trainer, admin -->
+                <?php if($user): ?><!-- user, trainer, admin -->
 
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=workout">Edzés létrehozása</a>
                 </li>
-                <?php if(isUser()) : ?>
+                <?php if($user->isUser()) : ?>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=search">Edzéstervek</a>
                 </li>
-                <?php elseif(isTrainer()) : ?><!-- for trainers,    other auths: user, trainer, admin -->
+                <?php elseif($user->isTrainer()) : ?><!-- for trainers,    other auths: user, trainer, admin -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=execa">Gyakorlatok</a>
                 </li>
-                <?php elseif(isAdmin()) : ?><!-- admin -->
+                <?php elseif($user->isAdmin()) : ?><!-- admin -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=execa">Edzés hozzáadása</a>
                 </li>
@@ -35,14 +35,14 @@
                 </li>
                 <?php endif; ?>
             </ul>
-            <?php if(isLoggedIn()): ?>
+            <?php if($user): ?>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <?= $_SESSION["FirstName"]." ".$_SESSION["LastName"] ?>
+                        <?= $user->displayName() ?>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                        <li><span class="text-muted dropdown-item"><?= ucwords($_SESSION["Rank"]) ?></span></li>
+                        <li><span class="text-muted dropdown-item"><?= ucwords($user->Rank) ?></span></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="index.php?page=profile">Profil</a></li>
                         <li><a class="dropdown-item" href="login.php">Kijelentkezés</a></li>
@@ -53,7 +53,7 @@
         </div>
     </div>
 </nav>
-<?php if(!isset($_SESSION['Email'])) : ?>
+<?php if(!$user) : ?>
 <div class="modal fade" id="forgotPasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

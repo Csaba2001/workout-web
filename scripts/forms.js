@@ -30,7 +30,8 @@ function getData(inputs){
 function setAlert(form, errorStr){
     let alertDiv = form.querySelector("div.alert");
     try {
-        alertDiv.style.display = "block";
+        alertDiv.classList.remove("d-none");
+        alertDiv.classList.add("d-block");
         alertDiv.classList.remove("alert-success");
         alertDiv.classList.add("alert-danger");
         alertDiv.innerHTML = errorStr;
@@ -41,7 +42,8 @@ function setAlert(form, errorStr){
 function clearAlert(form){
     let alertDiv = form.querySelector("div.alert");
     alertDiv.innerHTML = "";
-    alertDiv.style.display = "none";
+    alertDiv.classList.remove("d-block");
+    alertDiv.classList.add("d-none");
 }
 function clearErrors(form, floatingForms){
     let inputs = getInputs(form);

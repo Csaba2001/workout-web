@@ -22,76 +22,63 @@ function resetPassword(){
     $newPassword = sanitize($_POST["forgotPassword"]);
     $newPasswordConfirm = sanitize($_POST["forgotPasswordConfirm"]);
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        json("Helytelen email");
+    $user = new User();
+    $user->Email = $email;
+    $user->Password = $newPassword;
+    $user->PasswordConfirm = $newPasswordConfirm;
+    $user->validateBasic();
+
+    if($user->_errors){
+        json(implode("<br>",$user->_errors));
     }
 
-    if(!$newPassword || strlen($newPassword) < 3){
-        json("Password too short");
+    $user = User::getFromEmail($email);
+    if(!$user){
+        json("Nincs ilyen felhasznalo");
     }
-    if(strlen($newPassword) > 12){
-        json("Password too long");
+    $user->set($user);
+    if($user->Verified === "pending"){
+        json("A regisztracioja nincs visszaigazolva. Kerjuk elobb igazolja vissza.");
     }
-    if($newPassword !== $newPasswordConfirm){
-        json("Passwords don't match");
+    if($user->Status === "banned"){
+        json("A felhasznalo fiokja le van tiltva. Nem kerhet uj jelszot.");
     }
 
-    try {
-        $sql = "SELECT * FROM persons WHERE Email = ? LIMIT 1;";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(1, $email);
-        $query->execute();
-        $results = $query->fetch(PDO::FETCH_ASSOC);
-        if ($results) {
-            if($results["Verified"] === "pending"){
-                json("A regisztracioja nincs visszaigazolva. Kerjuk elobb igazolja vissza.");
-            }
-            if($results["Status"] === "banned"){
-                json("A felhasznalo fiokja le van tiltva. Nem kerhet uj jelszot.");
-            }
-            $now = new DateTime("now");
-            $then = ($results["NewPasswordExpires"]) ? new DateTime($results["NewPasswordExpires"]) : null;
-            if($results["NewPassword"] && $then){
-                if($now > $then){
-                    $sql = "UPDATE persons SET NewPassword = NULL, CodePassword = NULL, NewPasswordExpires = NULL WHERE Email = :email;";
-                    $query = $dbh->prepare($sql);
-                    $query->bindParam(":email",$email);
-                    $query->execute();
-                    json("Az elozo jelszo kerelem lejart, ezert toroltuk, generaljon ujat a Kuldes gombra kattintva.");
-                }else{
-                    json("Mar kervenyezett elfelejtett jelszot az emult 24 oraban.");
-                }
-            }else{
-                $passwordHash = password_hash($newPassword,PASSWORD_DEFAULT);
-                $codepassword = bin2hex(random_bytes(10));
-                $now->modify("+1 day");
-                $newpasswordexpires = $now->format("Y-m-d H:i:s");
-                $sql = "UPDATE persons SET NewPassword = :newpassword, CodePassword = :codepassword, NewPasswordExpires = :newpasswordexpires WHERE Email = :email;";
-                $query = $dbh->prepare($sql);
-                $query->bindParam(":newpassword",$passwordHash);
-                $query->bindParam(":codepassword",$codepassword);
-                $query->bindParam(":newpasswordexpires",$newpasswordexpires);
-                $query->bindParam(":email",$email);
+    $now = new DateTime("now");
+    $then = ($user->NewPasswordExpires) ? new DateTime($user->NewPasswordExpires) : null;
 
-                $verifyURL = 'http://'.HOST.'/newpw.php?code='.$codepassword.'&email='.$email;
-                $message = '<p>Elfelejetett jelszo</p>
+    if($user->NewPassword && $then){
+        if($now > $then){
+            $user->NewPassword = null;
+            $user->CodePassword = null;
+            $user->NewPasswordExpires = null;
+            $user->save();
+            json("Az elozo jelszo kerelem lejart, ezert toroltuk, generaljon ujat a Kuldes gombra kattintva.");
+        }else{
+            json("Mar kervenyezett elfelejtett jelszot az emult 24 oraban.");
+        }
+    }else{
+        $passwordHash = password_hash($newPassword,PASSWORD_DEFAULT);
+        $codepassword = bin2hex(random_bytes(10));
+        $now->modify("+1 day");
+        $newpasswordexpires = $now->format("Y-m-d H:i:s");
+        $user->NewPassword = $passwordHash;
+        $user->CodePassword = $codepassword;
+        $user->NewPasswordExpires = $newpasswordexpires;
+
+        $verifyURL = 'http://'.HOST.'/newpw.php?code='.$codepassword.'&email='.$email;
+        $message = '<p>Elfelejetett jelszo</p>
                         <p>Kérjük kattintson a linkre, hogy uj jelszot generaljon: </p>
                         <a href="'.$verifyURL.'">'.$verifyURL.'</a>';
-                if($query->execute()){
-                    if(sendMail($email, "Elfelejtett jelszo", $message)){
-                        json("A kerelmet sikeresen elkuldtuk, ellenorizze az email fiokjat", "ok");
-                    }else{
-                        json("Hiba tortent, probalja ujra");
-                    }
-                }else{
-                    json("SQL hiba tortent");
-                }
+        if($user->save()){
+            if(sendMail($email, "Elfelejtett jelszo", $message)){
+                json("A kerelmet sikeresen elkuldtuk, ellenorizze az email fiokjat", "ok");
+            }else{
+                json("Hiba tortent, probalja ujra");
             }
-        } else {
-            json("Nincs ilyen felhasznalo " . $email);
+        }else{
+            json("SQL hiba tortent".$user->_errors["Error"]);
         }
-    } catch (PDOException $e) {
-        json("SQL hiba tortent" . $e->getMessage());
     }
 }
 json("Empty request");

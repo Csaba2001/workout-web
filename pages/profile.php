@@ -3,7 +3,7 @@
 require_once("db_config.php");
 require_once("functions.php");
 
-if(!isLoggedIn()) {
+if(!$user) {
     redirect("index.php?page=home");
 }
 

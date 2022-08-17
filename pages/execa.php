@@ -25,7 +25,7 @@ try {
 ?>
 
 <div class="container col-lg-4">
-    <h2>Uj gyakorlat letrehozasa</h2>
+    <h2 class="mt-3">Uj gyakorlat letrehozasa</h2>
     <form ajax method="post" action="newexercise.php" enctype="application/x-www-form-urlencoded">
         <div class="mb-3">
             <label for="ExerciseName" class="form-label">Gyakorlat</label>

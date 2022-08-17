@@ -26,31 +26,38 @@ if(isset($_SESSION['Email'])){
             $result = $query->fetch(PDO::FETCH_ASSOC);
             if($result){
                 if($code !== $result["VerifyCode"]){
-                    die("Ervenytelen kod");
+                    setAlert("Ervenytelen kod");
+                    redirect("index.php?page=home");
                 }
 
                 if($result["Verified"] !== "pending"){
-                    die("Mar visszaigazolta a regisztraciot");
+                    setAlert("Mar visszaigazolta a regisztraciot");
+                    redirect("index.php?page=home");
                 }
                 $now = new DateTime("now");
                 $then = new DateTime($result["RegistrationExpires"]);
                 if($now > $then){
-                    die("Az ideje lejart, kerjuk regisztraljon ujra");
+                    setAlert("Az ideje lejart, kerjuk regisztraljon ujra");
+                    redirect("index.php?page=home");
                 }
 
                 $sql = "UPDATE persons SET Verified = 'verified' WHERE Email = :email;";
                 $query = $dbh->prepare($sql);
                 $query->bindParam(":email",$email);
                 if($query->execute()){
-                    die("Sikeresen visszaigazolta a regisztraciot. <br><a href='index.php?page=home'>Vissza a fooldalra</a>");
+                    setAlert("Sikeresen visszaigazolta a regisztraciot","success");
+                    redirect("index.php?page=home");
                 }else{
-                    die("Hiba tortent, probalja ujra");
+                    setAlert("Hiba tortent, probalja ujra");
+                    redirect("index.php?page=home");
                 }
             }else{
-                die("A regisztraciojat toroltek");
+                setAlert("A regisztraciojat toroltek");
+                redirect("index.php?page=home");
             }
         }catch(PDOException $e){
-            die("SQL hiba tortent: ".$e->getMessage());
+            setAlert("SQL hiba tortent: ".$e->getMessage());
+            redirect("index.php?page=home");
         }
     }else{
         redirect("index.php?page=home");

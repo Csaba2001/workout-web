@@ -25,8 +25,11 @@ if(isPost() && !empty($_POST)){
 
 function takeTraining(){
     global $dbh;
+    $user = new User();
+    $user = User::getCurrentUser();
+
     $trainingID = sanitize($_POST["TrainingID"]);
-    $personID = $_SESSION["PersonID"];
+    $personID = $user->PersonID;
 
     try {
         if (!getTrainingsFromTrainingID($trainingID)) {
@@ -37,6 +40,7 @@ function takeTraining(){
         $query->bindParam(":pid", $personID);
         $query->bindParam(":tid", $trainingID);
         if($query->execute()){
+            setAlert("Sikeresen felvetted az edzestervet","success");
             json("Sikeresen felvetted az edzestervet", "ok",["redirect" => "index.php?page=workout"]);
         }else{
             json("Sikertelen muvelet");

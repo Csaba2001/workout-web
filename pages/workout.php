@@ -2,8 +2,10 @@
 @session_start();
 require_once("functions.php");
 require_once("db_config.php");
+require_once("User.php");
+require_once("Trainer.php");
 
-if(!isLoggedIn()){
+if(!$user){
     redirect("index.php?page=home");
 }
 
@@ -11,10 +13,10 @@ global $dbh;
 global $days;
 global $categories;
 
-$personId = $_SESSION['PersonID'];
+$personId = $user->PersonID;
 $exercises = getExercises();
 
-if(isTrainer()) {
+if($user->isTrainer()) {
     try {
         $sql = "SELECT trainings.Category, persons.FirstName, trainings.picked, trainings.status, trainings.description as description, t1.ExerciseName as Mon, t2.ExerciseName as Tue, t3.ExerciseName as Wed, t4.ExerciseName as Thu, t5.ExerciseName as Fri, t6.ExerciseName as Sat, t7.ExerciseName as Sun, trainings.TrainingID, persons.PersonID
         FROM trainings 
@@ -37,12 +39,14 @@ if(isTrainer()) {
         $error = "Hiba tortent".$e->getMessage();
     }
 }
-if(isUser()){
+if($user->isUser()){
     try {
-        $sql = "SELECT * FROM trainings WHERE TrainerID <> 0 AND status = 'active';";
+        $sql = "SELECT trainings.* FROM trainings INNER JOIN persons_trainings ON persons_trainings.TrainingID = trainings.TrainingID WHERE persons_trainings.PersonID = :pid AND TrainerID = 0;";
         $query = $dbh->prepare($sql);
+        $query->bindParam(':pid', $personId);
         $query->execute();
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
+
 
         $sql = "SELECT persons.FirstName, trainings.* FROM trainings INNER JOIN persons_trainings ON persons_trainings.TrainingID = trainings.TrainingID INNER JOIN persons ON trainings.TrainerID = persons.PersonID WHERE persons_trainings.PersonID = :pid AND TrainerID <> 0;";
         $query = $dbh->prepare($sql);
@@ -60,8 +64,6 @@ if(isUser()){
     }
 }
 
-
-
 ?>
 
 <?php if(isset($error) && !empty($error)) : ?>
@@ -69,7 +71,7 @@ if(isUser()){
 <?php endif; ?>
 
 <div class="d-flex flex-column">
-    <?php if(isUser() && isset($selfTrainings)) : ?>
+    <?php if($user->isUser() && isset($selfTrainings)) : ?>
     <div class="container">
         <h3 class="me-auto p-4 pb-0">Valasztott edzéstervek</h3>
         <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 g-4 m-2">
@@ -80,31 +82,28 @@ if(isUser()){
                         Aktív
                     </div>
                     <div class="card-body p-0">
-                        <form>
+                        <h5 class="card-title ps-3 pt-3 pe-3"><?= $result["description"] ?></h5>
+                        <h6 class="card-subtitle mb-2 text-muted ps-3 pe-3">
+                            edző: <?= $result["FirstName"] ?><br>
+                            kategória: <?= $categories[$result["Category"]] ?><br>
+                            népszerűség: <?= $result["picked"] ?>
+                        </h6>
+                        <ul class="list-group border-0 bg-transparent" >
+                            <?php foreach($days as $day => $dayHun) : ?>
+                                <li class="list-group-item border border-0 <?php $dayofweek = date("D",time()); if($day == $dayofweek) echo "bg-primary text-white"; ?>">
+                                    <?php foreach($exercises as $exercise) : ?>
+                                    <?php if($result[$day] === $exercise["ExerciseID"]) : ?>
+                                    <span><?= $dayHun ?></span>:&nbsp;<span><?= $exercise["ExerciseName"] ?></span>
+                                    <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <form ajax id="giveUpTrainingForm" name="giveUpTrainingForm" action="giveUpTraining.php" method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="d-flex flex-row">
                             <input type="hidden" name="TrainingID" id="TrainingID" value="<?= $result["TrainingID"] ?>">
-                            <h5 class="card-title ps-3 pt-3 pe-3"><?= $result["description"] ?></h5>
-                            <h6 class="card-subtitle mb-2 text-muted ps-3 pe-3">
-                                kategória: <?= $categories[$result["Category"]] ?><br>
-                                népszerűség: <?= $result["picked"] ?>
-                            </h6>
-                            <ul class="list-group border-0 bg-transparent" >
-                                <?php foreach($days as $day => $dayHun) : ?>
-                                    <li class="list-group-item bg-transparent border border-0 <?php $dayofweek = date("D",time()); if($day == $dayofweek) echo "active"; ?>">
-                                        <div class="form-floating">
-                                            <select class="form-select" id="<?= $day ?>" name="<?= $day ?>">
-                                                <?php foreach($exercises as $exercise) : ?>
-                                                    <option <?php if($result[$day] === $exercise["ExerciseName"]) echo "selected"; ?> value="<?= $exercise["ExerciseID"] ?>"><?= $exercise["ExerciseName"] ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                            <label style="color: black;" for="<?= $day ?>"><?= $dayHun ?></label>
-                                        </div>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-                            <div class="d-flex flex-row">
-                                <input class="btn btn-success rounded-0 flex-grow-1" type="submit" mod="Modosit" value="Módosít">
-                                <input class="btn btn-danger rounded-0" type="submit" mod="Torol" value="Töröl">
-                            </div>
+                            <input class="btn btn-danger rounded-0 flex-grow-1" type="submit" value="Lead">
+                        </div>
                         </form>
                     </div>
                 </div>
@@ -115,7 +114,7 @@ if(isUser()){
     <?php endif; ?>
 
     <div class="container">
-        <h3 class="me-auto p-4 pb-0">Edzéstervek</h3>
+        <h3 class="me-auto p-4 pb-0">Sajat edzéstervek</h3>
         <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 g-4 m-2">
         <?php if(isset($results)) : ?>
             <?php foreach($results as $result) : ?>
@@ -148,9 +147,9 @@ if(isUser()){
                                 <?php foreach($days as $day => $dayHun) : ?>
                                 <li class="list-group-item bg-transparent border border-0 <?php $dayofweek = date("D",time()); if($day == $dayofweek) echo "active"; ?>">
                                     <div class="form-floating">
-                                        <select class="form-select" id="<?= $day ?>" name="<?= $day ?>" <?= $banned ? "disabled" : "" ?>>
+                                        <select class="form-select" id="<?= $day ?>" name="<?= $day ?>">
                                             <?php foreach($exercises as $exercise) : ?>
-                                            <option <?php if($result[$day] === $exercise["ExerciseName"]) echo "selected"; ?> value="<?= $exercise["ExerciseID"] ?>"><?= $exercise["ExerciseName"] ?></option>
+                                            <option <?php if($result[$day] === $exercise["ExerciseID"]) echo "selected"; ?> value="<?= $exercise["ExerciseID"] ?>"><?= $exercise["ExerciseName"] ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                         <label style="color: black;" for="<?= $day ?>"><?= $dayHun ?></label>
@@ -162,8 +161,8 @@ if(isUser()){
 
                             </div>
                             <div class="d-flex flex-row">
-                                <input class="btn btn-success rounded-0 flex-grow-1" type="submit" mod="Modosit" value="Módosít" <?= $banned ? "disabled" : "" ?>>
-                                <input class="btn btn-danger rounded-0" type="submit" mod="Torol" value="Töröl" <?= $banned ? "disabled" : "" ?>>
+                                <input class="btn btn-success rounded-0 flex-grow-1" type="submit" mod="Modosit" value="Módosít">
+                                <input class="btn btn-danger rounded-0" type="submit" mod="Torol" value="Töröl">
                             </div>
                         </form>
                     </div>

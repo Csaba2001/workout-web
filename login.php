@@ -2,9 +2,14 @@
 @session_start();
 require_once("db_config.php");
 require_once("functions.php");
+require_once("User.php");
+require_once("Trainer.php");
 
-if(isLoggedIn()){
-    logout();
+$currentUser = new User();
+$currentUser = User::getCurrentUser();
+if($currentUser){
+    $currentUser->logout();
+    redirect("index.php?page=home");
 }
 if(isPost() && !empty($_POST)){
     login();
@@ -20,17 +25,23 @@ function login(){
     $email = sanitize($_POST["loginEmail"]);
     $password = sanitize($_POST["loginPassword"]);
 
-    if(!$email || strlen($email) < 5){
-        json("Email too short");
-    }
-    if(!$password || strlen($password) < 3){
-        json("Password too short");
-    }
-    if(strlen($password) > 12){
-        json("Password too long");
-    }
-    if(!filter_var($email,FILTER_VALIDATE_EMAIL)){
-        json("Not an email");
+    $user = new User();
+    $user->Email = $email;
+    $user->Password = $password;
+
+    if($user->login()){
+        if($user->Rank === "trainer"){
+            $trainer = new Trainer();
+            $trainer = Trainer::getFromEmail($email);
+            if($trainer->approval === "pending"){
+                $user->logout();
+                json("A felhasznalo nincs engedelyezve");
+            }
+        }
+        setAlert("Üdvözöljük ".$user->displayName(),"success");
+        json("Sikeres bejelentkezes", "ok", ["redirect" => "index.php?page=home"]);
+    }else{
+        json(implode("<br>",$user->_errors));
     }
 }
 json("Empty request");

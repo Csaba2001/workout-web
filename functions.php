@@ -18,7 +18,18 @@ $categories = [
     "bulking" => "Erősítés"
 ];
 
-
+function setAlert($msg, $type = "danger"){
+    if(isset($_SESSION["alert"])){
+        unset($_SESSION["alert"]);
+    }
+    $_SESSION["alert"]["message"] = $msg;
+    $_SESSION["alert"]["type"] = $type;
+}
+function clearAlert(){
+    if(isset($_SESSION["alert"])){
+        unset($_SESSION["alert"]);
+    }
+}
 function redirect($URL){
     header("Location: $URL");
     echo "<script>window.location.href = '$URL';</script>";
@@ -54,34 +65,19 @@ function sendMail($to, $subject, $message){
         return false;
     }
 }
-function isTrainer(){
-    return !empty($_SESSION) && $_SESSION["Rank"] === 'trainer';
-}
-function isUser(){
-    return !empty($_SESSION) && $_SESSION["Rank"] === 'user';
-}
-function isAdmin(){
-    return !empty($_SESSION) && $_SESSION["Rank"] === 'admin';
-}
-function isLoggedIn(){
-    return isTrainer() or isUser() or isAdmin();
-}
-function logout(){
-    unset($_SESSION);
-    session_destroy();
-    redirect("index.php?page=home");
-}
+
 function getExercises(){
     global $dbh;
     $query = "";
     $results = "";
+    $user = User::getCurrentUser();
     try {
-        if(isTrainer()){
+        if($user->isTrainer()){
             $trainerID = $_SESSION["PersonID"];
             $sql = "SELECT * FROM exercises WHERE TrainerID IN (:ed, 0);";
             $query = $dbh->prepare($sql);
             $query->bindParam(':ed', $trainerID);
-        }elseif(isUser()){
+        }elseif($user->isUser()){
             $sql = "SELECT * FROM exercises;";
             $query = $dbh->prepare($sql);
         }

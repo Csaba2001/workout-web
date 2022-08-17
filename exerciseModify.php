@@ -2,8 +2,12 @@
 @session_start();
 require_once("db_config.php");
 require_once("functions.php");
+require_once("User.php");
+require_once("Trainer.php");
 
-if(!isTrainer()) {
+$user = new User();
+$user = User::getCurrentUser();
+if(!$user->isTrainer()) {
     redirect("index.php?page=home");
 }
 if (isPost() && !empty($_POST)) {
@@ -19,10 +23,13 @@ if (isPost() && !empty($_POST)) {
 
 function modexercise(){
     global $dbh;
+    $user = new User();
+    $user = User::getCurrentUser();
+
     $exerciseID = sanitize($_POST["ExerciseID"]);
     $exerciseName = sanitize($_POST["ExerciseName"]);
     $description = sanitize($_POST["Description"]);
-    $trainerID = $_SESSION['PersonID'];
+    $trainerID = $user->PersonID;
 
     $action = sanitize($_POST["mod"]);
     if(!$action){
