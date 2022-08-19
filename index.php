@@ -66,6 +66,12 @@ if(!isset($_GET["page"])){
         case "workout":
             include("pages/workout.php");
             break;
+        case "users":
+            include("pages/users.php");
+            break;
+        case "trainers":
+            include("pages/trainers.php");
+            break;
         case "home":
         default:
             include("pages/home.php");

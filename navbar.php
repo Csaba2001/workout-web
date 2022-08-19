@@ -18,6 +18,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=search">Edzéstervek</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?page=trainers">Értékelés</a>
+                </li>
                 <?php elseif($user->isTrainer()) : ?><!-- for trainers,    other auths: user, trainer, admin -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=execa">Gyakorlatok</a>
@@ -25,6 +28,9 @@
                 <?php elseif($user->isAdmin()) : ?><!-- admin -->
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=execa">Edzés hozzáadása</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?page=users">Felhasználók</a>
                 </li>
                 <?php endif; else : ?><!-- guest -->
                 <li class="nav-item" data-bs-toggle="modal" data-bs-target="#loginModal">

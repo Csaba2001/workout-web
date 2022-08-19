@@ -18,7 +18,7 @@ $exercises = getExercises();
 
 if($user->isTrainer()) {
     try {
-        $sql = "SELECT trainings.Category, persons.FirstName, trainings.picked, trainings.status, trainings.description as description, t1.ExerciseName as Mon, t2.ExerciseName as Tue, t3.ExerciseName as Wed, t4.ExerciseName as Thu, t5.ExerciseName as Fri, t6.ExerciseName as Sat, t7.ExerciseName as Sun, trainings.TrainingID, persons.PersonID
+        $sql = "SELECT trainings.*, categories.CategoryName, persons.FirstName, t1.ExerciseID as Mon, t2.ExerciseID as Tue, t3.ExerciseID as Wed, t4.ExerciseID as Thu, t5.ExerciseID as Fri, t6.ExerciseID as Sat, t7.ExerciseID as Sun, trainings.TrainingID, persons.PersonID
         FROM trainings 
         LEFT JOIN exercises t1 ON trainings.Mon=t1.ExerciseID
         LEFT JOIN exercises t2 ON trainings.Tue=t2.ExerciseID
@@ -185,8 +185,8 @@ if($user->isUser()){
             <h3>Edzésterv létrehozása</h3>
             <div class="form-floating mb-3">
                 <select class="form-select" id="trainingCategory" name="trainingCategory">
-                    <?php foreach($categories as $categoryEng => $categoryHun) : ?>
-                    <option value="<?= $categoryEng ?>"><?= $categoryHun ?></option>
+                    <?php foreach($categories as $category) : ?>
+                    <option value="<?= $category["CategoryID"] ?>"><?= $category["CategoryName"] ?></option>
                     <?php endforeach; ?>
                 </select>
                 <label for="trainingCategory">Kategória</label>
