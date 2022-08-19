@@ -39,12 +39,9 @@ function addtraining(){
     $sun = sanitize($_POST['Sun']);
     $days = [$mon,$tue,$wed,$thu,$fri,$sat,$sun];
 
-    $categories = [
-        "weightloss",
-        "cutting",
-        "bulking"
-    ];
-    if(!in_array($category,$categories)){
+    $categories = getCategories();
+
+    if(!array_key_exists($category,$categories)){
         json("Nincs kategoria kivalasztva");
     }
 
@@ -76,7 +73,7 @@ function addtraining(){
             }
         }
 
-        $sql = "INSERT INTO trainings (TrainerID, Category, description, Mon, Tue, Wed, Thu, Fri, Sat, Sun) VALUES (:tid,:ctg,:dsc,:mon,:tue,:wed,:thu,:fri,:sat,:sun)";
+        $sql = "INSERT INTO trainings (TrainerID, CategoryID, description, Mon, Tue, Wed, Thu, Fri, Sat, Sun) VALUES (:tid,:ctg,:dsc,:mon,:tue,:wed,:thu,:fri,:sat,:sun)";
         $query = $dbh->prepare($sql);
         $query->bindParam(':tid', $trainerID);
         $query->bindParam(':ctg', $category);
@@ -105,7 +102,7 @@ function addtraining(){
         }else{
             json("Sikertelen művelet");
         }
-    } catch (PDOException $error) {
-        die($error);
+    } catch (PDOException $e) {
+        json("SQL hiba: ".$e->getMessage());
     }
 }

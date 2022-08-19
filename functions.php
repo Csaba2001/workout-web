@@ -12,12 +12,6 @@ $days = [
     "Sun" => "Vasárnap"
 ];
 
-$categories = [
-    "weightloss" => "Fogyás",
-    "cutting" => "Szálkásítás",
-    "bulking" => "Erősítés"
-];
-
 function setAlert($msg, $type = "danger"){
     if(isset($_SESSION["alert"])){
         unset($_SESSION["alert"]);
@@ -89,6 +83,23 @@ function getExercises(){
         return $results;
     }
 }
+
+function getCategories(){
+    global $dbh;
+    $query = "";
+    $results = "";
+    try {
+        $sql = "SELECT * FROM categories;";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+    }catch(Exception $e){
+        throw new Exception("SQL error: ".$e->getMessage());
+    }finally{
+        return $results;
+    }
+}
+
 function getTrainingsFromTrainingID($trainingID){
     global $dbh;
     $results = false;
@@ -103,6 +114,36 @@ function getTrainingsFromTrainingID($trainingID){
     }catch(Exception $e){
         throw new Exception("SQL error: ".$e->getMessage());
     }finally{
+        return $results;
+    }
+}
+
+function getTrainers(){
+    global $dbh;
+    $results = false;
+    try {
+        $sql = "SELECT trainers.*, persons.* FROM trainers INNER JOIN persons ON trainers.TrainerID = persons.PersonID WHERE trainers.TrainerID <> 0;";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+    }catch(Exception $e){
+        throw new Exception("SQL error: ".$e->getMessage());
+    }finally{
+        return $results;
+    }
+}
+
+function getPersons(){
+    global $dbh;
+    $results = false;
+    try{
+        $sql="SELECT * FROM persons WHERE PersonID <> 0;";
+        $query=$dbh->prepare($sql);
+        $query->execute();
+        $results=$query->fetchAll(PDO::FETCH_ASSOC);
+    }catch (Exception $e){
+        throw new Exception("SQL error: ".$e->getMessage());
+    } finally {
         return $results;
     }
 }

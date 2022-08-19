@@ -6,22 +6,22 @@
         <div class="collapse navbar-collapse" id="mainMenu">
             <a class="navbar-brand" href="index.php?page=home">Személyi edző</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=home">Kezdőlap</a>
-                </li>
                 <?php if($user): ?><!-- user, trainer, admin -->
 
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=workout">Edzés létrehozása</a>
-                </li>
                 <?php if($user->isUser()) : ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=search">Edzéstervek</a>
+                    <a class="nav-link" href="index.php?page=workout">Edzéstervek</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?page=search">Kereső</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=trainers">Értékelés</a>
                 </li>
                 <?php elseif($user->isTrainer()) : ?><!-- for trainers,    other auths: user, trainer, admin -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?page=workout">Edzéstervek</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=execa">Gyakorlatok</a>
                 </li>
@@ -33,6 +33,9 @@
                     <a class="nav-link" href="index.php?page=users">Felhasználók</a>
                 </li>
                 <?php endif; else : ?><!-- guest -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php?page=home">Kezdőlap</a>
+                </li>
                 <li class="nav-item" data-bs-toggle="modal" data-bs-target="#loginModal">
                     <a class="nav-link" role="button">Bejelentkezés</a>
                 </li>

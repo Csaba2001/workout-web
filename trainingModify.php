@@ -54,12 +54,9 @@ function modtraining(){
         if(!$results){
             json("Nincs ilyen edzesterv");
         }
-        /*if($results["status"] === "banned"){
-            json("Tiltott edzesterv");
-        }*/
 
         if ($action === "Modosit") {
-            $sql = "UPDATE trainings SET Category = :ctg, description = :dsc, Mon = :mon, Tue = :tue, Wed = :wed, Thu = :thu, Fri = :fri, Sat = :sat, Sun = :sun WHERE TrainingID = :tid";
+            $sql = "UPDATE trainings SET CategoryID = :ctg, description = :dsc, Mon = :mon, Tue = :tue, Wed = :wed, Thu = :thu, Fri = :fri, Sat = :sat, Sun = :sun WHERE TrainingID = :tid";
             $query = $dbh->prepare($sql);
             $query->bindParam(':tid', $trainingID);
             $query->bindParam(':ctg', $category);
@@ -90,8 +87,8 @@ function modtraining(){
         } else {
             json("Invalid action");
         }
-    } catch (PDOException $error) {
-        die($error);
+    } catch (PDOException $e) {
+        json("SQL hiba: ".$e->getMessage());
     }
 }
 json("Invalid post");

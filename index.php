@@ -6,7 +6,8 @@ include("Trainer.php");
 
 //var_dump($_SESSION);
 $user = new User();
-if($user = User::getCurrentUser()){
+$user = User::getCurrentUser();
+if($user){
     $user->set(User::getCurrentUser());
     if($user->isTrainer()){
         $trainer = new Trainer();
@@ -25,6 +26,8 @@ if($user = User::getCurrentUser()){
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
     <!--link rel="stylesheet" type="text/css" href="style.css"-->
     <script type="application/javascript" src="scripts/shared.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
 </head>
 <body>
 <?php

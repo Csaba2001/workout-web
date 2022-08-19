@@ -11,10 +11,10 @@ if(!$user){
 
 global $dbh;
 global $days;
-global $categories;
 
 $personId = $user->PersonID;
 $exercises = getExercises();
+$categories = getCategories();
 
 if($user->isTrainer()) {
     try {
@@ -27,7 +27,7 @@ if($user->isTrainer()) {
         LEFT JOIN exercises t5 ON trainings.Fri=t5.ExerciseID
         LEFT JOIN exercises t6 ON trainings.Sat=t6.ExerciseID
         LEFT JOIN exercises t7 ON trainings.Sun=t7.ExerciseID
-        INNER JOIN persons ON trainings.TrainerID = persons.PersonID
+        INNER JOIN categories ON trainings.CategoryID = categories.CategoryID INNER JOIN persons ON trainings.TrainerID = persons.PersonID
         INNER JOIN trainers ON trainings.TrainerID = trainers.TrainerID
         WHERE persons.PersonID=:ed ORDER BY trainings.picked DESC";
         $query = $dbh->prepare($sql);
@@ -39,16 +39,17 @@ if($user->isTrainer()) {
         $error = "Hiba tortent".$e->getMessage();
     }
 }
+
 if($user->isUser()){
     try {
-        $sql = "SELECT trainings.* FROM trainings INNER JOIN persons_trainings ON persons_trainings.TrainingID = trainings.TrainingID WHERE persons_trainings.PersonID = :pid AND TrainerID = 0;";
+        $sql = "SELECT trainings.*, categories.CategoryName FROM trainings INNER JOIN persons_trainings ON persons_trainings.TrainingID = trainings.TrainingID INNER JOIN categories ON trainings.CategoryID = categories.CategoryID WHERE persons_trainings.PersonID = :pid AND TrainerID = 0;";
         $query = $dbh->prepare($sql);
         $query->bindParam(':pid', $personId);
         $query->execute();
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
 
 
-        $sql = "SELECT persons.FirstName, trainings.* FROM trainings INNER JOIN persons_trainings ON persons_trainings.TrainingID = trainings.TrainingID INNER JOIN persons ON trainings.TrainerID = persons.PersonID WHERE persons_trainings.PersonID = :pid AND TrainerID <> 0;";
+        $sql = "SELECT persons.FirstName, trainings.*, categories.CategoryName FROM trainings INNER JOIN persons_trainings ON persons_trainings.TrainingID = trainings.TrainingID INNER JOIN persons ON trainings.TrainerID = persons.PersonID INNER JOIN categories ON trainings.CategoryID = categories.CategoryID WHERE persons_trainings.PersonID = :pid AND TrainerID <> 0;";
         $query = $dbh->prepare($sql);
         $query->bindParam(':pid', $personId);
         $query->execute();
@@ -73,7 +74,7 @@ if($user->isUser()){
 <div class="d-flex flex-column">
     <?php if($user->isUser() && isset($selfTrainings)) : ?>
     <div class="container">
-        <h3 class="me-auto p-4 pb-0">Valasztott edzéstervek</h3>
+        <h3 class="me-auto p-4 pb-0">Választott edzéstervek</h3>
         <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 g-4 m-2">
         <?php foreach($selfTrainings as $result) : ?>
             <div class="col">
@@ -85,7 +86,7 @@ if($user->isUser()){
                         <h5 class="card-title ps-3 pt-3 pe-3"><?= $result["description"] ?></h5>
                         <h6 class="card-subtitle mb-2 text-muted ps-3 pe-3">
                             edző: <?= $result["FirstName"] ?><br>
-                            kategória: <?= $categories[$result["Category"]] ?><br>
+                            kategória: <?= $result["CategoryName"] ?><br>
                             népszerűség: <?= $result["picked"] ?>
                         </h6>
                         <ul class="list-group border-0 bg-transparent" >
@@ -114,7 +115,7 @@ if($user->isUser()){
     <?php endif; ?>
 
     <div class="container">
-        <h3 class="me-auto p-4 pb-0">Sajat edzéstervek</h3>
+        <h3 class="me-auto p-4 pb-0">Saját edzéstervek</h3>
         <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 g-4 m-2">
         <?php if(isset($results)) : ?>
             <?php foreach($results as $result) : ?>
@@ -136,12 +137,14 @@ if($user->isUser()){
                     <div class="card-body p-0">
                         <form ajax id="modifyTrainingForm" name="modifyTrainingForm" action="trainingModify.php" method="post" enctype="application/x-www-form-urlencoded">
                             <input type="hidden" name="TrainingID" id="TrainingID" value="<?= $result["TrainingID"] ?>">
-                            <input type="hidden" name="Category" id="Category" value="<?= $result["Category"] ?>">
+                            <input type="hidden" name="Category" id="Category" value="<?= $result["CategoryID"] ?>">
                             <input type="hidden" name="Description" id="Description" value="<?= $result["description"] ?>">
                             <h5 class="card-title ps-3 pt-3 pe-3"><?= $result["description"] ?></h5>
                             <h6 class="card-subtitle mb-2 text-muted ps-3 pe-3">
-                                kategória: <?= $categories[$result["Category"]] ?><br>
+                                kategória: <?= $result["CategoryName"] ?><br>
+                                <?php if($user->isTrainer()): ?>
                                 népszerűség: <?= $result["picked"] ?>
+                                <?php endif; ?>
                             </h6>
                             <ul class="list-group border-0 bg-transparent" >
                                 <?php foreach($days as $day => $dayHun) : ?>
@@ -172,7 +175,7 @@ if($user->isUser()){
         <?php else : ?>
             <h4>Nincs meg edzesterve</h4>
             <a href="#newTrainingForm" class="btn btn-primary">Edzesterv letrehozasa</a>
-            <?php if(isUser()) : ?>
+            <?php if($user->isUser()) : ?>
                 <a href="index.php?page=search" class="btn btn-primary">Edzesterv kiválasztása</a>
             <?php endif; ?>
         <?php endif; ?>

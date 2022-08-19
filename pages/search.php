@@ -12,7 +12,7 @@ if(!$user->isUser()){
 
 global $dbh;
 global $days;
-global $categories;
+$categories = getCategories();
 
 $trainers = [];
 $results = [];
@@ -42,9 +42,8 @@ function searchForTraining($category = null, $trainer = null){
     global $trainers;
     global $results;
     global $error;
-    global $categories;
 
-    if(!array_key_exists($category,$categories)){
+    if(!array_key_exists($category,getCategories())){
         $category = null;
     }
 
@@ -54,7 +53,7 @@ function searchForTraining($category = null, $trainer = null){
     $personID = $_SESSION["PersonID"];
 
     try {
-        $sql = "SELECT trainings.TrainerID, persons_trainings.PersonID, trainings.Category, trainings.picked, trainings.description as description, persons.FirstName, trainers.rating, t1.ExerciseName as Mon, t2.ExerciseName as Tue, t3.ExerciseName as Wed, t4.ExerciseName as Thu, t5.ExerciseName as Fri, t6.ExerciseName as Sat, t7.ExerciseName as Sun, trainings.TrainingID
+        $sql = "SELECT trainings.TrainerID, persons_trainings.PersonID, categories.CategoryName, trainings.picked, trainings.description as description, persons.FirstName, trainers.rating, t1.ExerciseName as Mon, t2.ExerciseName as Tue, t3.ExerciseName as Wed, t4.ExerciseName as Thu, t5.ExerciseName as Fri, t6.ExerciseName as Sat, t7.ExerciseName as Sun, trainings.TrainingID
         FROM trainings 
         LEFT JOIN exercises t1 ON trainings.Mon=t1.ExerciseID
         LEFT JOIN exercises t2 ON trainings.Tue=t2.ExerciseID
@@ -63,12 +62,13 @@ function searchForTraining($category = null, $trainer = null){
         LEFT JOIN exercises t5 ON trainings.Fri=t5.ExerciseID
         LEFT JOIN exercises t6 ON trainings.Sat=t6.ExerciseID
         LEFT JOIN exercises t7 ON trainings.Sun=t7.ExerciseID
+        LEFT JOIN categories ON trainings.CategoryID = categories.CategoryID 
         LEFT JOIN persons ON trainings.TrainerID = persons.PersonID
         LEFT JOIN trainers ON trainings.TrainerID = trainers.TrainerID
         LEFT JOIN persons_trainings ON trainings.TrainingID = persons_trainings.TrainingID WHERE ";
         $ext = "";
         if($category){
-            $ext .= " trainings.Category=:category";
+            $ext .= " categories.CategoryID=:category";
         }
         if($category && !$trainer){
             $ext .= " AND trainings.TrainerID <> 0";
@@ -98,7 +98,7 @@ function searchForTraining($category = null, $trainer = null){
             $error = "Nincs találat";
         }
     }catch(PDOException $e){
-        $error = "Hiba történt".$e->getMessage(); //vedd ki vegen
+        $error = "Hiba történt: ".$e->getMessage(); //vedd ki vegen
     }
 }
 ?>
@@ -108,9 +108,9 @@ function searchForTraining($category = null, $trainer = null){
         <form class="m-3 d-flex flex-row" method="post" action="index.php?page=search" enctype="application/x-www-form-urlencoded">
             <select id="category" name="category" class="form-select m-2">
                 <option>Kategória</option>
-                <option value="weightloss">Fogyás</option>
-                <option value="cutting">Szálkásítás</option>
-                <option value="bulking">Erősítés</option>
+                <?php foreach($categories as $category): ?>
+                <option value="<?= $category["CategoryID"] ?>"><?= $category["CategoryName"] ?></option>
+                <?php endforeach; ?>
             </select>
             <?php if(isset($trainers) && !empty($trainers)) : ?>
                 <select id="trainer" name="trainer" class="form-select m-2">
@@ -131,7 +131,7 @@ function searchForTraining($category = null, $trainer = null){
     <div class="d-flex flex-column">
         <?php if(!empty($results)) : ?>
         <div class="container">
-            <h3 class="me-auto p-4 pb-0">Talalatok</h3>
+            <h3 class="me-auto p-4 pb-0">Találatok</h3>
             <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 g-4 m-2">
                 <?php foreach($results as $result) : ?>
                     <div class="col">
@@ -143,7 +143,7 @@ function searchForTraining($category = null, $trainer = null){
                                 <h5 class="card-title ps-3 pt-3 pe-3"><?= $result["description"] ?></h5>
                                 <h6 class="card-subtitle mb-2 text-muted ps-3 pe-3">
                                     edző: <?= $result["FirstName"] ?><br>
-                                    kategória: <?= $categories[$result["Category"]] ?><br>
+                                    kategória: <?= $result["CategoryName"] ?><br>
                                     népszerűség: <?= $result["picked"] ?>
                                 </h6>
                                 <ul class="list-group border-0 bg-transparent" >

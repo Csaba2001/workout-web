@@ -356,7 +356,7 @@ class User {
     }
 
     public function displayName(){
-        return $this->FirstName." ".$this->LastName;
+        return $this->LastName." ".$this->FirstName;
     }
 
 }
