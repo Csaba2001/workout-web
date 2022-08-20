@@ -24,9 +24,9 @@ if(isPost() && !empty($_POST)){
 
 function modprofile(){
     global $dbh;
-    $lastName = sanitize($_POST["modifyFirstName"]);
-    $firstName = sanitize($_POST["modifyLastName"]);
-    $phone = sanitize($_POST["modifyPhone"]);
+    $firstName = sanitize($_POST["FirstName"]);
+    $lastName = sanitize($_POST["LastName"]);
+    $phone = sanitize($_POST["Phone"]);
 
     $user = new User();
     $user = User::getCurrentUser();
@@ -40,7 +40,7 @@ function modprofile(){
     $errors = $user->_errors;
 
     if(!$user->_errors && $user->isTrainer()){
-        $cv = sanitize($_POST["cvText"]);
+        $cv = sanitize($_POST["CV"]);
         $trainer = new Trainer();
         $trainer = Trainer::getFromID($_SESSION["PersonID"]);
         $trainer->CV = $cv;
@@ -52,7 +52,7 @@ function modprofile(){
     }
 
     if($errors){
-        json(implode("<br>",$errors));
+        json("Sikertelen módosítás","error",["errors" => $errors]);
     }else{
         setAlert("Sikeres módosítás","success");
         json("Sikeres módosítás","ok",["redirect" => "index.php?page=profile"]);

@@ -7,11 +7,10 @@
             <a class="navbar-brand" href="index.php?page=home">Személyi edző</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <?php if($user): ?><!-- user, trainer, admin -->
-
-                <?php if($user->isUser()) : ?>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=workout">Edzéstervek</a>
                 </li>
+                <?php if($user->isUser()) : ?>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=search">Kereső</a>
                 </li>
@@ -20,14 +19,11 @@
                 </li>
                 <?php elseif($user->isTrainer()) : ?><!-- for trainers,    other auths: user, trainer, admin -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=workout">Edzéstervek</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="index.php?page=execa">Gyakorlatok</a>
                 </li>
                 <?php elseif($user->isAdmin()) : ?><!-- admin -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=execa">Edzés hozzáadása</a>
+                    <a class="nav-link" href="index.php?page=categories">Edzéskategóriák</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?page=users">Felhasználók</a>
@@ -51,7 +47,22 @@
                         <?= $user->displayName() ?>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                        <li><span class="text-muted dropdown-item"><?= ucwords($user->Rank) ?></span></li>
+                        <li><span class="text-muted dropdown-item">
+                            <?php
+                            switch($user->Rank){
+                                case "user":
+                                    echo "Felhasználó";
+                                    break;
+                                case "trainer":
+                                    echo "Edző";
+                                    break;
+                                default:
+                                    echo "Admin";
+                                    break;
+                            }
+                            ?>
+                            </span>
+                        </li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="index.php?page=profile">Profil</a></li>
                         <li><a class="dropdown-item" href="login.php">Kijelentkezés</a></li>
@@ -67,22 +78,22 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Elfelejtett jelszo</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Elfelejtett jelszó</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Megsem"></button>
             </div>
             <div class="modal-body">
                 <form ajax id="forgotPasswordModalForm" action="forgot.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="forgotEmail" name="forgotEmail" placeholder="name@example.com">
+                        <input type="email" class="form-control" id="forgotEmail" name="forgotEmail" placeholder="Email cím">
                         <label for="floatingInput">Email cím</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="forgotPassword" name="forgotPassword" placeholder="password">
-                        <label for="floatingInput">Uj jelszo</label>
+                        <input type="password" class="form-control" id="forgotPassword" name="forgotPassword" placeholder="Új jelszó">
+                        <label for="floatingInput">Új jelszó</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="forgotPasswordConfirm" name="forgotPasswordConfirm" placeholder="password">
-                        <label for="floatingInput">Uj jelszo meg egyszer</label>
+                        <input type="password" class="form-control" id="forgotPasswordConfirm" name="forgotPasswordConfirm" placeholder="Új jelszó visszaigazolás">
+                        <label for="floatingInput">Új jelszó visszaigazolás</label>
                     </div>
                     <div class="alert alert-danger mt-2" role="alert" style="display: none;">
 
@@ -91,8 +102,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">Nem felejtettem el</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezar</button>
-                <button type="submit" form="forgotPasswordModalForm" class="btn btn-primary">Kuldes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégsem</button>
+                <button type="submit" form="forgotPasswordModalForm" class="btn btn-primary">Küldés</button>
             </div>
         </div>
     </div>
@@ -107,11 +118,11 @@
             <div class="modal-body">
                 <form ajax id="loginModalForm" action="login.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="loginEmail" name="loginEmail" placeholder="name@example.com">
+                        <input type="email" class="form-control" id="Email" name="Email" placeholder="name@example.com">
                         <label for="floatingInput">Email cím</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="loginPassword" name="loginPassword" placeholder="Jelszo">
+                        <input type="password" class="form-control" id="Hash" name="Hash" placeholder="Jelszo">
                         <label for="floatingPassword">Jelszó</label>
                     </div>
                     <div class="alert alert-danger mt-2" role="alert" style="display: none;">
@@ -120,9 +131,9 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Elfelejtett jelszo</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezar</button>
-                <button type="submit" form="loginModalForm" class="btn btn-primary">Bejelentkezes</button>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Elfelejtett jelszó</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégsem</button>
+                <button type="submit" form="loginModalForm" class="btn btn-primary">Bejelentkezés</button>
             </div>
         </div>
     </div>
@@ -131,34 +142,34 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Regisztracio</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Bezar"></button>
+                <h5 class="modal-title" id="staticBackdropLabel">Regisztráció</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Bezár"></button>
             </div>
             <div class="modal-body">
                 <form ajax id="registerModalForm" action="register.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="registerFirstName" name="registerFirstName" placeholder="Janos">
-                        <label for="registerFirstName">Név</label>
+                        <input type="text" class="form-control" id="FirstName" name="FirstName" placeholder="Név">
+                        <label for="FirstName">Név</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="registerLastName" name="registerLastName" placeholder="Dobo">
-                        <label for="registerLastName">Vezetéknév</label>
+                        <input type="text" class="form-control" id="LastName" name="LastName" placeholder="Családnév">
+                        <label for="LastName">Családnév</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="registerEmail" name="registerEmail" placeholder="dobo@cs.cs">
-                        <label for="registerEmail">Email</label>
+                        <input type="email" class="form-control" id="Email" name="Email" placeholder="Email">
+                        <label for="Email">Email</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="registerPhone" name="registerPhone" placeholder="06066666666">
-                        <label for="registerPhone">Telefonszám</label>
+                        <input type="text" class="form-control" id="Phone" name="Phone" placeholder="Telefonszám">
+                        <label for="Phone">Telefonszám</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="registerPassword" name="registerPassword" placeholder="Jelszo">
-                        <label for="registerPassword">Jelszó</label>
+                        <input type="password" class="form-control" id="Hash" name="Hash" placeholder="Jelszó">
+                        <label for="Hash">Jelszó</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="registerPasswordConfirm" name="registerPasswordConfirm" placeholder="Jelszo">
-                        <label for="registerPasswordConfirm">Jelszó visszaigazolás</label>
+                        <input type="password" class="form-control" id="PasswordConfirm" name="PasswordConfirm" placeholder="Jelszó visszaigazolás">
+                        <label for="PasswordConfirm">Jelszó visszaigazolás</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="trainer" id="registerUserType" name="registerUserType" onclick="trainerInput(this, this.form)">
@@ -176,8 +187,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezar</button>
-                <button type="submit" form="registerModalForm" class="btn btn-primary">Regisztracio</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégsem</button>
+                <button type="submit" form="registerModalForm" class="btn btn-primary">Regisztráció</button>
             </div>
         </div>
     </div>

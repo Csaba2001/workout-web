@@ -22,8 +22,8 @@ if(isPost() && !empty($_POST)){
     }
 }
 function login(){
-    $email = sanitize($_POST["loginEmail"]);
-    $password = sanitize($_POST["loginPassword"]);
+    $email = sanitize($_POST["Email"]);
+    $password = sanitize($_POST["Hash"]);
 
     $user = new User();
     $user->Email = $email;
@@ -41,7 +41,7 @@ function login(){
         setAlert("Üdvözöljük ".$user->displayName(),"success");
         json("Sikeres bejelentkezés", "ok", ["redirect" => "index.php?page=home"]);
     }else{
-        json(implode("<br>",$user->_errors));
+        json("Sikertelen bejelentkezés","error",["errors" => $user->_errors]);
     }
 }
 json("Empty request");

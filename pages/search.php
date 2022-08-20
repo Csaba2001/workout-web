@@ -105,7 +105,8 @@ function searchForTraining($category = null, $trainer = null){
 
 <div class="d-flex flex-column">
     <div class="container d-flex flex-row justify-content-center">
-        <form class="m-3 d-flex flex-row" method="post" action="index.php?page=search" enctype="application/x-www-form-urlencoded">
+        <form class="m-3 d-flex flex-row align-items-center" method="post" action="index.php?page=search" enctype="application/x-www-form-urlencoded">
+            <span>Szűrők:</span>
             <select id="category" name="category" class="form-select m-2">
                 <option>Kategória</option>
                 <?php foreach($categories as $category): ?>
@@ -170,7 +171,5 @@ function searchForTraining($category = null, $trainer = null){
         </div>
         <?php endif; ?>
     </div>
-
 </div>
-
 <script type="application/javascript" src="scripts/forms.js"></script>

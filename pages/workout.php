@@ -123,11 +123,11 @@ if($user->isAdmin()){
 ?>
 
 <?php if(isset($error) && !empty($error)) : ?>
-    <div class="alert alert-danger mt-2" role="alert"><?= $error ?></div>
+<div class="alert alert-danger mt-2" role="alert"><?= $error ?></div>
 <?php endif; ?>
 
-<div class="d-flex flex-column">
-    <?php if($user->isUser() && isset($selfTrainings)) : ?>
+<div class="d-flex flex-column mb-2">
+    <?php if($user->isUser() && !empty($selfTrainings)) : ?>
     <div class="container">
         <h3 class="me-auto p-4 pb-0">Választott edzéstervek</h3>
         <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 g-4 m-2">
@@ -169,10 +169,11 @@ if($user->isAdmin()){
     </div>
     <?php endif; ?>
 
+    <?php if(!$user->isAdmin()): ?>
     <div class="container">
         <h3 class="me-auto p-4 pb-0">Saját edzéstervek</h3>
         <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 g-4 m-2">
-        <?php if(isset($results)) : ?>
+        <?php if(!empty($results)) : ?>
             <?php foreach($results as $result) : ?>
             <?php
                 if($result["status"] === "active") $banned = 0;
@@ -228,15 +229,19 @@ if($user->isAdmin()){
             </div>
             <?php endforeach; ?>
         <?php else : ?>
-            <h4>Nincs meg edzesterve</h4>
-            <a href="#newTrainingForm" class="btn btn-primary">Edzesterv letrehozasa</a>
-            <?php if($user->isUser()) : ?>
-                <a href="index.php?page=search" class="btn btn-primary">Edzesterv kiválasztása</a>
-            <?php endif; ?>
+            <h4>Nincs még edzésterve</h4>
+            <div class="col">
+                <a href="#newTrainingForm" class="btn btn-primary mb-2">Edzésterv létrehozása</a>
+                <?php if($user->isUser()) : ?>
+                <a href="index.php?page=search" class="btn btn-primary mb-2">Edzésterv kiválasztása</a>
+                <?php endif; ?>
+            </div>
         <?php endif; ?>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if(!$user->isAdmin()): ?>
     <div class="container card col-lg-4 col-sm-10 p-3">
         <?php if(!empty($exercises)): ?>
         <form ajax id="newTrainingForm" name="newTrainingForm" action="newtraining.php" method="post" enctype="application/x-www-form-urlencoded">
@@ -274,7 +279,48 @@ if($user->isAdmin()){
             <a href="index.php?page=execa" class="btn btn-primary">Uj gyakorlat</a>
         <?php endif; ?>
     </div>
+    <?php endif; ?>
+
+    <?php if($user->isAdmin()): ?>
+    <div class="col-lg-16 m-4">
+        <h2>Edzéstervek</h2>
+        <table class="table table-sm table-striped">
+            <tr>
+                <th>Edző</th>
+                <th>Kategória</th>
+                <th>Leírás</th>
+                <?php foreach($days as $day => $dayHun): ?>
+                <th><?= $dayHun ?></th>
+                <?php endforeach; ?>
+                <th>Műveletek</th>
+            </tr>
+            <?php foreach ($trainings as $training): ?>
+                <tr>
+                    <td><?= $training["trainerName"]?></td>
+                    <td><?= $training["CategoryName"]?></td>
+                    <td><?= $training["description"]?></td>
+                    <?php foreach($days as $day => $dayHun): ?>
+                    <td>
+                    <?php
+                    foreach($exercises as $exercise){
+                        if($exercise["ExerciseID"] === $training[$day]){
+                            echo $exercise["ExerciseName"];
+                        }
+                    }
+                    ?>
+                    </td>
+                    <?php endforeach; ?>
+                    <td>
+                        <form class="d-flex flex-column" id="trainingBanForm" name="trainingBanForm" action="index.php?page=workout" method="post" enctype="application/x-www-form-urlencoded">
+                            <input type="hidden" name="TrainingID" id="TrainingID" value="<?= $training["TrainingID"] ?>">
+                            <input type="submit" name="submit" class="btn btn-sm btn-<?= $training["status"] === "active" ? "danger" : "success" ?>" value="<?= $training["status"] === "active" ? "Felfüggeszt" : "Engedélyez" ?>">
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+
+    <?php endif; ?>
 </div>
-
-
 <script src="scripts/forms.js"></script>

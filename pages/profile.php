@@ -8,45 +8,45 @@ if(!$user) {
 }
 
 ?>
-<div class="container col-lg-4">
-    <h1 class="mt-3">Profil</h1>
+<div class="container col-lg-4 border border-dark border-opacity-10 p-2 mt-3 ps-3 pe-3 pb-3">
+    <h2 class="mt-3">Felhasználói adatok</h2>
     <form ajax method="post" action="profileModify.php" enctype="application/x-www-form-urlencoded">
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="modifyFirstName" name="modifyFirstName" placeholder="Keresztnev" value="<?= $user->FirstName ?>" >
-            <label for="modifyFirstName">Keresztnev</label>
+            <input type="text" class="form-control" id="FirstName" name="FirstName" placeholder="Utónév" value="<?= $user->FirstName ?>" >
+            <label for="FirstName">Utónév</label>
         </div>
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="modifyLastName" name="modifyLastName" placeholder="Vezeteknev" value="<?= $user->LastName ?>">
-            <label for="modifyLastName">Vezeteknev</label>
+            <input type="text" class="form-control" id="LastName" name="LastName" placeholder="Családnév" value="<?= $user->LastName ?>">
+            <label for="LastName">Családnév</label>
         </div>
         <div class="form-floating mb-3">
-            <input type="tel" class="form-control" id="modifyPhone" name="modifyPhone" placeholder="Telefonszam" value="<?= $user->Phone ?>">
-            <label for="modifyPhone">Telefonszam</label>
+            <input type="tel" class="form-control" id="Phone" name="Phone" placeholder="Telefonszám" value="<?= $user->Phone ?>">
+            <label for="Phone">Telefonszám</label>
         </div>
         <?php if($user->isTrainer()) : ?>
         <div class="form-floating mb-3">
-            <textarea rows="12" class="h-100 form-control" id="cvText" name="cvText" placeholder="Oneletrajz"><?= $trainer->CV ?></textarea>
-            <label for="cvText">Oneletrajz</label>
+            <textarea rows="12" class="h-100 form-control" id="CV" name="CV" placeholder="Önéletrajz"><?= $trainer->CV ?></textarea>
+            <label for="CV">Önéletrajz</label>
         </div>
         <?php endif; ?>
-        <input class="btn btn-primary" type="submit" value="Modosit">
-        <input class="btn btn-secondary" type="reset" value="Megsem">
+        <input class="btn btn-primary" type="submit" value="Módosít">
+        <input class="btn btn-secondary" type="reset" value="Ürít">
         <div class="d-none alert alert-danger mt-2" role="alert">
 
         </div>
     </form>
-    <h2 class="h1 mt-3">Jelszo</h2>
+    <h2 class="mt-3">Jelszó változtatás</h2>
     <form ajax method="post" action="forgot.php" enctype="application/x-www-form-urlencoded">
         <div class="form-floating mb-3">
-            <input type="password" class="form-control" id="forgotPassword" name="forgotPassword" placeholder="Jelszo">
-            <label for="forgotPassword">Jelszo</label>
+            <input type="password" class="form-control" id="Hash" name="Hash" placeholder="Jelszó">
+            <label for="Hash">Jelszó</label>
         </div>
         <div class="form-floating mb-3">
-            <input type="password" class="form-control" id="forgotPasswordConfirm" name="forgotPasswordConfirm" placeholder="Jelszo megerositese">
-            <label for="forgotPasswordConfirm">Jelszo megerosirtese</label>
+            <input type="password" class="form-control" id="PasswordConfirm" name="PasswordConfirm" placeholder="Jelszó megerősítése">
+            <label for="PasswordConfirm">Jelszó megerősítése</label>
         </div>
-        <input class="btn btn-primary" type="submit" value="Modosit">
-        <input class="btn btn-secondary" type="reset" value="Megsem">
+        <input class="btn btn-primary" type="submit" value="Módosít">
+        <input class="btn btn-secondary" type="reset" value="Ürít">
         <input type="hidden" id="forgotEmail" name="forgotEmail" value="<?= $user->Email ?>">
         <div class="d-none alert alert-danger mt-2" role="alert">
 

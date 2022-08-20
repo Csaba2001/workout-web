@@ -26,8 +26,9 @@ $trainers = getTrainers();
                 <h3><?= substr($trainer["LastName"],0,1).". ".$trainer["FirstName"] ?></h3>
                 <p><?= substr($trainer["CV"],0,255); if(strlen($trainer["CV"]) >= 255){ echo "..."; } ?></p>
                 <?php if($trainer["rating"]): ?>
+                <p class="fs-6 text-muted ms-2">Értékelések száma: <?= $trainer["rated"] ?></p>
                 <div class="d-flex flex-row flex-wrap-0">
-                <?php for($i = 0; $i < $trainer["rating"]; $i++): ?>
+                    <?php for($i = 0; $i < $trainer["rating"]; $i++): ?>
                     <span class="material-symbols-outlined text-warning">
                     star
                     </span>

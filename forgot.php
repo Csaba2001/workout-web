@@ -19,8 +19,8 @@ function resetPassword(){
     global $dbh;
 
     $email = sanitize($_POST["forgotEmail"]);
-    $newPassword = sanitize($_POST["forgotPassword"]);
-    $newPasswordConfirm = sanitize($_POST["forgotPasswordConfirm"]);
+    $newPassword = sanitize($_POST["Hash"]);
+    $newPasswordConfirm = sanitize($_POST["PasswordConfirm"]);
 
     $user = new User();
     $user->Email = $email;
@@ -29,7 +29,7 @@ function resetPassword(){
     $user->validateBasic();
 
     if($user->_errors){
-        json(implode("<br>",$user->_errors));
+        json("Sikertelen művelet","error",["errors" => $user->_errors]);
     }
 
     $user = User::getFromEmail($email);

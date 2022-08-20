@@ -1,6 +1,7 @@
 <?php
 
 class Trainer extends User {
+    public $_errors = [];
     public $TrainerID, $CV, $rated = null, $rating = null, $approval;
 
     public static function getFromID($id){
@@ -19,7 +20,7 @@ class Trainer extends User {
         $user = new User();
         $user = $query->fetchObject("User");
 
-        if($user && $trainer){
+        if($user && $trainer) {
             return $trainer;
         }
         return false;

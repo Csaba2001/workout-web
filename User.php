@@ -66,11 +66,10 @@ class User {
 
     public function validateBasic(){
         $this->_errors = [];
-
         $this->validateEmail($this->Email);
         $this->validatePassword($this->Password);
         if($this->PasswordConfirm !== $this->Password){
-            $this->_errors["Hash"] = "Jelszavak nem egyeznek";
+            $this->_errors["PasswordConfirm"] = "Jelszavak nem egyeznek";
             return false;
         }
         return true;
@@ -85,7 +84,7 @@ class User {
         $this->validatePhone($this->Phone);
         $this->validatePassword($this->Password);
         if($this->PasswordConfirm !== $this->Password){
-            $this->_errors["Hash"] = "Jelszavak nem egyeznek";
+            $this->_errors["PasswordConfirm"] = "A jelszavak nem egyeznek";
             return false;
         }
         if(!in_array($this->Rank, self::$userTypes)){

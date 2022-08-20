@@ -22,12 +22,12 @@ if(isPost() && !empty($_POST)){
 global $dbh;
 
 function register(){
-    $email = sanitize($_POST["registerEmail"]);
-    $password = sanitize($_POST["registerPassword"]);
-    $firstname = sanitize($_POST["registerFirstName"]);
-    $lastname = sanitize($_POST["registerLastName"]);
-    $phone = sanitize($_POST["registerPhone"]);
-    $passwordConfirm = sanitize($_POST["registerPasswordConfirm"]);
+    $email = sanitize($_POST["Email"]);
+    $password = sanitize($_POST["Hash"]);
+    $firstname = sanitize($_POST["FirstName"]);
+    $lastname = sanitize($_POST["LastName"]);
+    $phone = sanitize($_POST["Phone"]);
+    $passwordConfirm = sanitize($_POST["PasswordConfirm"]);
     $userType = sanitize($_POST["registerUserType"]);
 
     $user = new User();
@@ -49,13 +49,14 @@ function register(){
     }
 
     if($user->register()){
-        json("Sikeres regisztráció", "ok");
+        setAlert("Sikeres regisztráció. Ellenőrizze az email postafiókját.","success");
+        json("Sikeres regisztráció", "ok",["redirect" => "index.php?page=home"]);
     }else{
         $errors = $user->_errors;
         if($trainerError){
             $errors = array_merge($user->_errors,$trainerError);
         }
-        json(implode("<br>",$errors));
+        json("Sikertelen regisztráció","error",["errors" => $errors]);
     }
 }
 json("Empty request");

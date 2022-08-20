@@ -39,11 +39,15 @@ function setAlert(form, errorStr){
         console.log(e);
     }
 }
-function clearAlert(form){
-    let alertDiv = form.querySelector("div.alert");
-    alertDiv.innerHTML = "";
-    alertDiv.classList.remove("d-block");
-    alertDiv.classList.add("d-none");
+function clearAlert(form) {
+    try {
+        let alertDiv = form.querySelector("div.alert");
+        alertDiv.innerHTML = "";
+        alertDiv.classList.remove("d-block");
+        alertDiv.classList.add("d-none");
+    }catch (e) {
+        console.log(e);
+    }
 }
 function clearErrors(form, floatingForms){
     let inputs = getInputs(form);
@@ -79,8 +83,8 @@ function ajax(e){
     let form = e.target;
     let inputs = getInputs(form);
 
-    //clearAlert(form);
-    //clearErrors(form, getInputForms(form));
+    clearAlert(form);
+    clearErrors(form, getInputForms(form));
 
     let data = getData(inputs);
     if(e.submitter.getAttribute("mod")){
@@ -94,6 +98,12 @@ function ajax(e){
         console.log("response:");
         console.log(response);
         if(response.type === "error"){
+            if(response.options.errors) {
+                Object.keys(response.options.errors).forEach(function (key){
+                    setError(form,key,response.options.errors[key]);
+                    //console.log(response.options.errors[key]);
+                })
+            }
             if(response.message) {
                 setAlert(form, response.message);
             }
@@ -107,6 +117,18 @@ function ajax(e){
             }
         }
     });
+}
+function setError(form, inputId, message){
+    try {
+        let input = form.querySelector("#" + inputId);
+        let inputDiv = input.parentElement;
+        let label = inputDiv.querySelector("label");
+        input.classList.remove("is-valid");
+        input.classList.add("is-invalid");
+        label.innerHTML = message;
+    }catch (e) {
+        console.log(e);
+    }
 }
 function trainerInput(checkElement, form){
     let cvFormGroup = form.querySelector("#cvInput");

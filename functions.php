@@ -71,7 +71,7 @@ function getExercises(){
             $sql = "SELECT * FROM exercises WHERE TrainerID IN (:ed, 0);";
             $query = $dbh->prepare($sql);
             $query->bindParam(':ed', $trainerID);
-        }elseif($user->isUser()){
+        }elseif($user->isUser() || $user->isAdmin()){
             $sql = "SELECT * FROM exercises;";
             $query = $dbh->prepare($sql);
         }
