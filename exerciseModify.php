@@ -54,9 +54,9 @@ function modexercise(){
             $query->bindParam(':dc', $description);
             $query->bindParam(':eid', $exerciseID);
             if ($query->execute()) {
-                json("Sikeres modositas", "ok");
+                json("Sikeres módosítás", "ok");
             } else {
-                json("Sikertelen modositas");
+                json("Sikertelen módosítás");
             }
         }
         elseif($action === "Torol"){
@@ -65,9 +65,9 @@ function modexercise(){
             $query->bindParam(":eid",$exerciseID);
             $query->bindParam(":tid",$trainerID);
             if($query->execute()){
-                json("Sikeres torles","ok");
+                json("Sikeres törlés","ok");
             }else{
-                json("Sikertelen torles");
+                json("Sikertelen törlés");
             }
         }else{
             json("Invalid action");

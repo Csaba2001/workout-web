@@ -24,11 +24,11 @@ if(isGet() && !empty($_GET)){
     }
     $user->set($user);
     if(!$user->CodePassword or !$user->NewPasswordExpires or !$user->NewPassword){
-        setAlert("Ervenytelen kod");
+        setAlert("Érvénytelen kód");
         redirect("index.php?page=home");
     }
     if($code !== $user->CodePassword){
-        setAlert("Ervenytelen kod");
+        setAlert("Érvénytelen kód");
         redirect("index.php?page=home");
     }
 
@@ -40,7 +40,7 @@ if(isGet() && !empty($_GET)){
         $user->NewPasswordExpires = null;
         $user->NewPassword = null;
         $user->save();
-        setAlert("A kerelem lejart, kerjuk generaljon ujat");
+        setAlert("A kérelem lejárt, kérjük generáljon újat");
         redirect("index.php?page=home");
     }
 
@@ -55,10 +55,10 @@ if(isGet() && !empty($_GET)){
         if($currentUser){
             $currentUser->logout();
         }
-        setAlert("A jelszava sikeresen megvaltozott, mostmar bejelentkezhet az uj jelszavaval","success");
+        setAlert("A jelszava sikeresen megváltozott, mostmár bejelentkezhet az új jelszavával","success");
         redirect("index.php?page=home");
     }else{
-        setAlert("Hiba tortent, probalja ujra");
+        setAlert("Hiba történt, próbálja újra");
         redirect("index.php?page=home");
     }
 }else{

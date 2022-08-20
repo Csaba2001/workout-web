@@ -42,11 +42,11 @@ function addtraining(){
     $categories = getCategories();
 
     if(!array_key_exists($category,$categories)){
-        json("Nincs kategoria kivalasztva");
+        json("Nincs kategória kiválasztva");
     }
 
     if(strlen($description) < 5){
-        json("Rovid a leiras");
+        json("Rövid a leírás");
     }
 
 

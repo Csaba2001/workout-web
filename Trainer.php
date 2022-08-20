@@ -41,11 +41,11 @@ class Trainer extends User {
 
     public function validateCV($cv){
         if(strlen($cv) < 20){
-            $this->_errors["CV"] = "Tul rovid a CV";
+            $this->_errors["CV"] = "Túl rövid a CV";
             return false;
         }
         if(strlen($cv) > 2000){
-            $this->_errors["CV"] = "Tul hosszu a CV";
+            $this->_errors["CV"] = "Túl hosszú a CV";
             return false;
         }
         return true;
@@ -57,18 +57,18 @@ class Trainer extends User {
         $trainer = new Trainer();
         $trainer = Trainer::getFromID($this->TrainerID);
         if($trainer){
-            $this->_errors["Error"] = "Mar letezik ez az edzo";
+            $this->_errors["Error"] = "Már létezik ez az edző";
             return false;
         }
 
         $user = new User();
         $user = User::getFromID($this->TrainerID);
         if(!$user){
-            $this->_errors["Error"] = "Nincs ilyen felhasznalo";
+            $this->_errors["Error"] = "Nincs ilyen felhasználó";
             return false;
         }
         if($user->Rank !== "trainer"){
-            $this->_errors["Error"] = "Felhasznalo nem edzo";
+            $this->_errors["Error"] = "Felhasználó nem edző";
             return false;
         }
 
@@ -105,7 +105,7 @@ class Trainer extends User {
                 $query->bindParam(":trainerID",$this->TrainerID);
                 $query->bindParam(":cv", $this->CV);
                 if($query->execute()){
-                    if(sendMail($this->Email, "Regisztracio igazolas", $message)){
+                    if(sendMail($this->Email, "Regisztráció igazolás", $message)){
                         return true;
                     }else{
                         $this->_errors["Error"] = "Sikeretelen regisztráció, probálja újra";
@@ -133,7 +133,7 @@ class Trainer extends User {
                     return false;
                 }
             }catch(PDOException $e){
-                $this->_errors["Error"] = "SQL hiba tortent: ".$e->getMessage();
+                $this->_errors["Error"] = "SQL hiba történt: ".$e->getMessage();
                 return false;
             }
         }

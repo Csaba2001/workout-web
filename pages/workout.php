@@ -61,10 +61,65 @@ if($user->isUser()){
         }
     }
     catch (PDOException $e) {
-        $error = "Hiba tortent".$e->getMessage();
+        $error = "Hiba történt".$e->getMessage();
     }
 }
+if($user->isAdmin()){
+    $trainings = [];
+    try {
+        $sql = "SELECT trainings.*, CONCAT(persons.FirstName, ' ', persons.LastName) as trainerName, categories.CategoryName, t1.ExerciseID as Mon, t2.ExerciseID as Tue, t3.ExerciseID as Wed, t4.ExerciseID as Thu, t5.ExerciseID as Fri, t6.ExerciseID as Sat, t7.ExerciseID as Sun FROM trainings
+        LEFT JOIN exercises t1 ON trainings.Mon=t1.ExerciseID
+        LEFT JOIN exercises t2 ON trainings.Tue=t2.ExerciseID
+        LEFT JOIN exercises t3 ON trainings.Wed=t3.ExerciseID
+        LEFT JOIN exercises t4 ON trainings.Thu=t4.ExerciseID
+        LEFT JOIN exercises t5 ON trainings.Fri=t5.ExerciseID
+        LEFT JOIN exercises t6 ON trainings.Sat=t6.ExerciseID
+        LEFT JOIN exercises t7 ON trainings.Sun=t7.ExerciseID
+        INNER JOIN persons ON trainings.TrainerID = persons.PersonID INNER JOIN categories ON trainings.CategoryID = categories.CategoryID WHERE trainings.TrainerID <> 0 ORDER BY trainings.TrainingID DESC;";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+        $trainings = $query->fetchAll(PDO::FETCH_ASSOC);
+    }catch (PDOException $e){
+        $error = "SQL hiba: ".$e->getMessage();
+    }
 
+    if(isPost()){
+        $trainingID = sanitize($_POST["TrainingID"]);
+        $action = sanitize($_POST["submit"]);
+
+        if(!in_array($trainingID, array_column($trainings, 'TrainingID'))){
+            setAlert("Invalid training.");
+            redirect("index.php?page=workout");
+        }
+
+        if($action === "Felfüggeszt"){
+            $sql = "UPDATE trainings SET status = 'banned' WHERE TrainingID = :tid;";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(":tid",$trainingID);
+            if($query->execute()){
+                setAlert("Az edzésterv tiltva lett.");
+                redirect("index.php?page=workout");
+            }else{
+                setAlert("Sikertelen művelet.");
+                redirect("index.php?page=workout");
+            }
+        }elseif($action === "Engedélyez"){
+            $sql = "UPDATE trainings SET status = 'active' WHERE TrainingID = :tid;";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(":tid",$trainingID);
+            if($query->execute()){
+                setAlert("Az edzésterv engedélyezve lett.","success");
+                redirect("index.php?page=workout");
+            }else{
+                setAlert("Sikertelen művelet.");
+                redirect("index.php?page=workout");
+            }
+        }else{
+            setAlert("Invalid action.");
+            redirect("index.php?page=workout");
+        }
+    }
+}
 ?>
 
 <?php if(isset($error) && !empty($error)) : ?>

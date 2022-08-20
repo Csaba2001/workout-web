@@ -44,22 +44,22 @@ class User {
         $user = User::getFromEmail($this->Email);
         if($user){
             if(!password_verify($this->Password, $user->Hash)){
-                $this->_errors["Hash"] = "Ervenytelen jelszo";
+                $this->_errors["Hash"] = "Érvénytelen jelszó";
                 return false;
             }
             if($user->Verified !== "verified"){
-                $this->_errors["Error"] = "A felhasznalo nincs visszaigazolva kerjuk nezze meg az email fiokjat";
+                $this->_errors["Error"] = "A felhasználó nincs visszaigazolva kérjük nézze meg az email fiókját";
                 return false;
             }
             if($user->Status === "blocked"){
-                $this->_errors["Error"] = "A felhasznalo fiokja tiltva van";
+                $this->_errors["Error"] = "A felhasználó fiókja tiltva van";
                 return false;
             }
             $this->set($user);
             $_SESSION["PersonID"] = $user->PersonID;
             return true;
         }else{
-            $this->_errors["Email"] = "Nincs ilyen felhasznalo";
+            $this->_errors["Email"] = "Nincs ilyen felhasználó";
             return false;
         }
     }
@@ -89,7 +89,7 @@ class User {
             return false;
         }
         if(!in_array($this->Rank, self::$userTypes)){
-            $this->_errors["Rank"] = "Helytelen felhasznaloi jog";
+            $this->_errors["Rank"] = "Helytelen felhasználói jog";
             return false;
         }
 
@@ -153,25 +153,25 @@ class User {
                         $query->bindParam(":lastID",$lastID);
                         $query->bindParam(":cv", $this->CV);
                         if($query->execute()){
-                            if(sendMail($this->Email, "Regisztracio igazolas", $message)){
+                            if(sendMail($this->Email, "Regisztráció igazolás", $message)){
                                 return true;
                             }else{
                                 $this->_errors["Error"] = "Sikeretelen regisztráció, probálja újra";
                                 return false;
                             }
                         }else{
-                            $this->_errors["Error"] = "SQL hiba tortent: ";
+                            $this->_errors["Error"] = "SQL hiba történt: ";
                             return false;
                         }
                     }
                 }else{
-                    $this->_errors["Error"] = "SQL hiba tortent: ";
+                    $this->_errors["Error"] = "SQL hiba történt: ";
                     return false;
                 }
             }catch(PDOException $e) {
                 $existingkey = "Integrity constraint violation: 1062 Duplicate entry";
                 if (strpos($e->getMessage(), $existingkey) !== FALSE) {
-                    $this->_errors["Email"] = "Az email cim mar foglalt";
+                    $this->_errors["Email"] = "Az email cím már foglalt";
                     return false;
                 }else {
                     $this->_errors["Error"] = "SQL hiba tortent: ".$e->getMessage();
@@ -202,7 +202,7 @@ class User {
                     return true;
                 }
             }catch (PDOException $e){
-                $this->_errors["Error"] = "SQL hiba tortent: ".$e->getMessage();
+                $this->_errors["Error"] = "SQL hiba történt: ".$e->getMessage();
                 return false;
             }
         }
@@ -288,7 +288,7 @@ class User {
         }
         if(self::$_currentUser && self::$_currentUser->Status === "blocked"){
             self::$_currentUser->logout();
-            setAlert("A felhasznaloi fiokja tiltva lett");
+            setAlert("A felhasználói fiókja tiltva lett");
         }
         return self::$_currentUser;
     }
@@ -305,7 +305,7 @@ class User {
 
     public function validateEmail($email){
         if(!$email = filter_var($email,FILTER_VALIDATE_EMAIL)){
-            $this->_errors["Email"] = "Helytelen email cim";
+            $this->_errors["Email"] = "Helytelen email cím";
             return false;
         }
         return true;
@@ -313,11 +313,11 @@ class User {
 
     public function validatePassword($password){
         if(!$password || strlen($password) < 3){
-            $this->_errors["Hash"] = "Tul rovid a jelszo, minimum 3 karakter";
+            $this->_errors["Hash"] = "Túl rövid a jelszó, minimum 3 karakter";
             return false;
         }
         if(strlen($password) > 12){
-            $this->_errors["Hash"] = "Tul hosszu a jelszo, maximum 12 karakter";
+            $this->_errors["Hash"] = "Túl hosszú a jelszó, maximum 12 karakter";
             return false;
         }
         return true;
@@ -325,11 +325,11 @@ class User {
 
     public function validateFirstName($firstname){
         if(!$firstname || strlen($firstname) < 3){
-            $this->_errors["FirstName"] = "Tul rovid a utonev, minimum 3 karakter";
+            $this->_errors["FirstName"] = "Túl rövid az útónév, minimum 3 karakter";
             return false;
         }
         if(strlen($firstname) > 30){
-            $this->_errors["FirstName"] = "Tul hosszu a utonev, maximum 30 karakter";
+            $this->_errors["FirstName"] = "Túl hosszu az utónév, maximum 30 karakter";
             return false;
         }
         return true;
@@ -337,11 +337,11 @@ class User {
 
     public function validateLastName($lastname){
         if(!$lastname || strlen($lastname) < 3){
-            $this->_errors["FirstName"] = "Tul rovid a vezeteknev, minimum 3 karakter";
+            $this->_errors["LastName"] = "Túl rövid a családnév, minimum 3 karakter";
             return false;
         }
         if(strlen($lastname) > 30){
-            $this->_errors["FirstName"] = "Tul hosszu a vezeteknev, maximum 30 karakter";
+            $this->_errors["LastName"] = "Túl hosszú a családnév, maximum 30 karakter";
             return false;
         }
         return true;
@@ -349,7 +349,7 @@ class User {
 
     public function validatePhone($phone){
         if(!$phone = preg_match('/^(\+?\d{2,3})?(0+?)?(\d{9})$/',$phone)){
-            $this->_errors["Phone"] = "Helytelen telefonszam";
+            $this->_errors["Phone"] = "Helytelen telefonszám";
             return false;
         }
         return true;

@@ -33,19 +33,19 @@ function giveUpTraining(){
 
     try {
         if (!getTrainingsFromTrainingID($trainingID)) {
-            json("Nincs ilyen edzesterv");
+            json("Nincs ilyen edzésterv");
         }
         $sql = "DELETE FROM persons_trainings WHERE PersonID = :pid AND TrainingID = :tid;";
         $query = $dbh->prepare($sql);
         $query->bindParam(":pid", $personID);
         $query->bindParam(":tid", $trainingID);
         if($query->execute()){
-            setAlert("Sikeresen leadta az edzestervet","success");
-            json("Sikeresen leadta az edzestervet", "ok",["redirect" => "index.php?page=workout"]);
+            setAlert("Sikeresen leadta az edzéstervet","success");
+            json("Sikeresen leadta az edzéstervet", "ok",["redirect" => "index.php?page=workout"]);
         }else{
-            json("Sikertelen muvelet");
+            json("Sikertelen művelet");
         }
     }catch(PDOException $e){
-        json("SQL hiba tortent: ".$e->getMessage()); // vedd ki
+        json("SQL hiba történt: ".$e->getMessage()); // vedd ki
     }
 }

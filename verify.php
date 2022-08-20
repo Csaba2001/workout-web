@@ -26,18 +26,18 @@ if(isset($_SESSION['Email'])){
             $result = $query->fetch(PDO::FETCH_ASSOC);
             if($result){
                 if($code !== $result["VerifyCode"]){
-                    setAlert("Ervenytelen kod");
+                    setAlert("Érvénytelen kód");
                     redirect("index.php?page=home");
                 }
 
                 if($result["Verified"] !== "pending"){
-                    setAlert("Mar visszaigazolta a regisztraciot");
+                    setAlert("Már visszaigazolta a regisztrációt");
                     redirect("index.php?page=home");
                 }
                 $now = new DateTime("now");
                 $then = new DateTime($result["RegistrationExpires"]);
                 if($now > $then){
-                    setAlert("Az ideje lejart, kerjuk regisztraljon ujra");
+                    setAlert("Az ideje lejárt, kérjük regisztráljon újra");
                     redirect("index.php?page=home");
                 }
 
@@ -45,18 +45,18 @@ if(isset($_SESSION['Email'])){
                 $query = $dbh->prepare($sql);
                 $query->bindParam(":email",$email);
                 if($query->execute()){
-                    setAlert("Sikeresen visszaigazolta a regisztraciot","success");
+                    setAlert("Sikeresen visszaigazolta a regisztrációt","success");
                     redirect("index.php?page=home");
                 }else{
-                    setAlert("Hiba tortent, probalja ujra");
+                    setAlert("Hiba történt, próbálja újra");
                     redirect("index.php?page=home");
                 }
             }else{
-                setAlert("A regisztraciojat toroltek");
+                setAlert("A regisztrációját törölték");
                 redirect("index.php?page=home");
             }
         }catch(PDOException $e){
-            setAlert("SQL hiba tortent: ".$e->getMessage());
+            setAlert("SQL hiba történt: ".$e->getMessage());
             redirect("index.php?page=home");
         }
     }else{

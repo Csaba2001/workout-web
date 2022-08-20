@@ -34,14 +34,14 @@ function resetPassword(){
 
     $user = User::getFromEmail($email);
     if(!$user){
-        json("Nincs ilyen felhasznalo");
+        json("Nincs ilyen felhasználó");
     }
     $user->set($user);
     if($user->Verified === "pending"){
-        json("A regisztracioja nincs visszaigazolva. Kerjuk elobb igazolja vissza.");
+        json("A regisztrációja nincs visszaigazolva. Kérjük előbb igazolja vissza");
     }
     if($user->Status === "banned"){
-        json("A felhasznalo fiokja le van tiltva. Nem kerhet uj jelszot.");
+        json("A felhasználó fiókja le van tiltva. Nem kérhet új jelszót");
     }
 
     $now = new DateTime("now");
@@ -53,9 +53,9 @@ function resetPassword(){
             $user->CodePassword = null;
             $user->NewPasswordExpires = null;
             $user->save();
-            json("Az elozo jelszo kerelem lejart, ezert toroltuk, generaljon ujat a Kuldes gombra kattintva.");
+            json("Az előző jelszó kérelem lejárt, ezért töröltük, generáljon újat a Küldés gombra kattintva");
         }else{
-            json("Mar kervenyezett elfelejtett jelszot az emult 24 oraban.");
+            json("Már kérvényezett elfelejtett jelszót az emúlt 24 órában");
         }
     }else{
         $passwordHash = password_hash($newPassword,PASSWORD_DEFAULT);
@@ -71,13 +71,13 @@ function resetPassword(){
                         <p>Kérjük kattintson a linkre, hogy uj jelszot generaljon: </p>
                         <a href="'.$verifyURL.'">'.$verifyURL.'</a>';
         if($user->save()){
-            if(sendMail($email, "Elfelejtett jelszo", $message)){
-                json("A kerelmet sikeresen elkuldtuk, ellenorizze az email fiokjat", "ok");
+            if(sendMail($email, "Elfelejtett jelszó", $message)){
+                json("A kérelmet sikeresen elküldtük, ellenőrizze az email fiókját", "ok");
             }else{
-                json("Hiba tortent, probalja ujra");
+                json("Hiba törtent, próbálja újra");
             }
         }else{
-            json("SQL hiba tortent".$user->_errors["Error"]);
+            json("Hiba történt, próbálja újra");
         }
     }
 }

@@ -54,6 +54,7 @@ function modprofile(){
     if($errors){
         json(implode("<br>",$errors));
     }else{
-        json("Sikeres modositas","ok");
+        setAlert("Sikeres módosítás","success");
+        json("Sikeres módosítás","ok",["redirect" => "index.php?page=profile"]);
     }
 }

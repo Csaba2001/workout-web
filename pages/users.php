@@ -24,12 +24,13 @@ function returnTrainer($id){
 <table class="table table-sm table-striped">
     <tr>
         <th>ID</th>
-        <th>Csaladnev</th>
-        <th>Nev</th>
+        <th>Családnév</th>
+        <th>Név</th>
         <th>Email</th>
         <th>Szint</th>
-        <th>Muveletek</th>
-        <th>Edzoknek</th>
+        <th>Értékelés</th>
+        <th>Műveletek</th>
+        <th>Edzőknek</th>
     </tr>
     <?php foreach ($persons as $person): ?>
     <?php

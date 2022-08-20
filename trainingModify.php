@@ -52,7 +52,7 @@ function modtraining(){
         $query->execute();
         $results = $query->fetch(PDO::FETCH_ASSOC);
         if(!$results){
-            json("Nincs ilyen edzesterv");
+            json("Nincs ilyen edzésterv");
         }
 
         if ($action === "Modosit") {
@@ -69,20 +69,20 @@ function modtraining(){
             $query->bindParam(':sat', $sat);
             $query->bindParam(':sun', $sun);
             if ($query->execute()) {
-                setAlert("Sikeres modositas","success");
-                json("Sikeres modositas", "ok",["redirect" => "index.php?page=workout"]);
+                setAlert("Sikeres módosítás","success");
+                json("Sikeres módosítás", "ok",["redirect" => "index.php?page=workout"]);
             } else {
-                json("Sikertelen modositas");
+                json("Sikertelen módosítás");
             }
         } elseif ($action === "Torol") {
             $sql = "DELETE FROM trainings WHERE TrainingID = :tid;";
             $query = $dbh->prepare($sql);
             $query->bindParam(":tid", $trainingID);
             if ($query->execute()) {
-                setAlert("Sikeres torles","success");
-                json("Sikeres torles", "ok",["redirect" => "index.php?page=workout"]);
+                setAlert("Sikeres törlés","success");
+                json("Sikeres törlés", "ok",["redirect" => "index.php?page=workout"]);
             } else {
-                json("Sikertelen torles");
+                json("Sikertelen törlés");
             }
         } else {
             json("Invalid action");

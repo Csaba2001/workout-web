@@ -40,12 +40,12 @@ function takeTraining(){
         $query->bindParam(":pid", $personID);
         $query->bindParam(":tid", $trainingID);
         if($query->execute()){
-            setAlert("Sikeresen felvetted az edzestervet","success");
-            json("Sikeresen felvetted az edzestervet", "ok",["redirect" => "index.php?page=workout"]);
+            setAlert("Sikeresen felvetted az edzéstervet","success");
+            json("Sikeresen felvetted az edzéstervet", "ok",["redirect" => "index.php?page=workout"]);
         }else{
-            json("Sikertelen muvelet");
+            json("Sikertelen művelet");
         }
     }catch(PDOException $e){
-        json("SQL hiba tortent: ".$e->getMessage()); // vedd ki
+        json("SQL hiba történt: ".$e->getMessage()); // vedd ki
     }
 }

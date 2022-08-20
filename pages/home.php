@@ -31,8 +31,7 @@ $trainers = getTrainers();
                     <span class="material-symbols-outlined text-warning">
                     star
                     </span>
-                <?php endfor; ?>
-                    <p class="ms-2"><?= ceil($trainer["rating"]) ?> / <?= $trainer["rated"] ?></p>
+                    <?php endfor; ?>
                 </div>
                 <?php endif; ?>
             </div>

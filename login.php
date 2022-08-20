@@ -35,11 +35,11 @@ function login(){
             $trainer = Trainer::getFromEmail($email);
             if($trainer->approval === "pending"){
                 $user->logout();
-                json("A felhasznalo nincs engedelyezve");
+                json("A felhasználó nincs engedélyezve");
             }
         }
         setAlert("Üdvözöljük ".$user->displayName(),"success");
-        json("Sikeres bejelentkezes", "ok", ["redirect" => "index.php?page=home"]);
+        json("Sikeres bejelentkezés", "ok", ["redirect" => "index.php?page=home"]);
     }else{
         json(implode("<br>",$user->_errors));
     }

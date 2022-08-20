@@ -28,10 +28,10 @@ function addexercise(){
     $trainerID = $_SESSION['PersonID'];
 
     if(strlen($exerciseName) < 4){
-        json("Rovid nev");
+        json("Rövid név");
     }
     if(strlen($description)<5){
-        json("Rovid leiras");
+        json("Rövid leírás");
     }
 
     try {
@@ -41,9 +41,9 @@ function addexercise(){
         $query->bindParam(':dc', $description);
         $query->bindParam(':tid', $trainerID);
         if($query->execute()){
-            json("Sikeres gyakorlat letrehozas","ok");
+            json("Sikeres gyakorlat létrehozás","ok");
         }else{
-            json("Hiba tortent");
+            json("Hiba történt");
         }
     } catch (PDOException $error) {
         die($error);
