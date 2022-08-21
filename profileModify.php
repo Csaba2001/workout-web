@@ -58,3 +58,4 @@ function modprofile(){
         json("Sikeres módosítás","ok",["redirect" => "index.php?page=profile"]);
     }
 }
+json("Invalid request");

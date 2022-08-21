@@ -56,7 +56,7 @@ if(isset($_SESSION['Email'])){
                 redirect("index.php?page=home");
             }
         }catch(PDOException $e){
-            setAlert("SQL hiba történt: ".$e->getMessage());
+            setAlert("Hiba történt");
             redirect("index.php?page=home");
         }
     }else{

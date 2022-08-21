@@ -24,7 +24,7 @@ try {
     $query->execute();
     $trainers = $query->fetchAll(PDO::FETCH_ASSOC);
 }catch(PDOException $e){
-    $error = "Hiba tortent".$e->getMessage(); //vedd ki vegen
+    $error = "Hiba történt";
 }
 
 if(isPost()){
@@ -53,7 +53,7 @@ function searchForTraining($category = null, $trainer = null){
     $personID = $_SESSION["PersonID"];
 
     try {
-        $sql = "SELECT trainings.TrainerID, persons_trainings.PersonID, categories.CategoryName, trainings.picked, trainings.description as description, persons.FirstName, trainers.rating, t1.ExerciseName as Mon, t2.ExerciseName as Tue, t3.ExerciseName as Wed, t4.ExerciseName as Thu, t5.ExerciseName as Fri, t6.ExerciseName as Sat, t7.ExerciseName as Sun, trainings.TrainingID
+        $sql = "SELECT trainings.TrainerID, persons_trainings.PersonID, categories.CategoryName, trainings.picked, trainings.description as description, persons.FirstName, trainers.rating, t1.ExerciseName as Mon, t1.Description as MonDesc, t2.ExerciseName as Tue, t2.Description as TueDesc, t3.ExerciseName as Wed, t3.Description as WedDesc, t4.ExerciseName as Thu, t4.Description as ThuDesc, t5.ExerciseName as Fri, t5.Description as FriDesc, t6.ExerciseName as Sat, t6.Description as SatDesc, t7.ExerciseName as Sun, t7.Description as SunDesc, trainings.TrainingID
         FROM trainings 
         LEFT JOIN exercises t1 ON trainings.Mon=t1.ExerciseID
         LEFT JOIN exercises t2 ON trainings.Tue=t2.ExerciseID
@@ -98,7 +98,7 @@ function searchForTraining($category = null, $trainer = null){
             $error = "Nincs találat";
         }
     }catch(PDOException $e){
-        $error = "Hiba történt: ".$e->getMessage(); //vedd ki vegen
+        $error = "Hiba történt";
     }
 }
 ?>
@@ -137,7 +137,7 @@ function searchForTraining($category = null, $trainer = null){
                 <?php foreach($results as $result) : ?>
                     <div class="col">
                         <div class="card rounded-0">
-                            <div class="card-header rounded-0 text-bg-primary">
+                            <div class="card-header rounded-0 text-black text-bg-primary">
                                 Aktív
                             </div>
                             <div class="card-body p-0">
@@ -153,6 +153,11 @@ function searchForTraining($category = null, $trainer = null){
                                             <div class="form-floating">
                                                 <input type="text" readonly class="form-control-plaintext ps-2 pe-0" id="<?= $day ?>" value="<?= $result[$day] ?>">
                                                 <label style="color: black;" class="ps-0 pe-0" for="<?= $day ?>"><?= $dayHun ?></label>
+                                                <div class="text-muted">
+                                                    <span>Leírás:</span>
+                                                    <br>
+                                                    <span><?= $result[$day."Desc"] ?></span>
+                                                </div>
                                             </div>
                                         </li>
                                     <?php endforeach; ?>

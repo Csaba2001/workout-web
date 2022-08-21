@@ -34,3 +34,12 @@
     color: #c59b08;
 }
 /* Modified from: https://github.com/mukulkant/Star-rating-using-pure-css */
+.text-justify {
+    text-align: justify;
+}
+p {
+    color: #5a5a5a;
+}
+h1,h2,h3,h4,h5,h6 {
+    color: #000;
+}

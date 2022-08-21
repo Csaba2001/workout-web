@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="border-bottom: 1px solid #d3d3d3;">
+<nav id="nav" class="navbar sticky-top navbar-dark navbar-expand-lg bg-dark shadow">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -84,16 +84,16 @@
             <div class="modal-body">
                 <form ajax id="forgotPasswordModalForm" action="forgot.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="forgotEmail" name="forgotEmail" placeholder="Email cím">
-                        <label for="floatingInput">Email cím</label>
+                        <input type="email" class="form-control" id="Email" name="Email" placeholder="Email cím">
+                        <label for="Email">Email cím</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="forgotPassword" name="forgotPassword" placeholder="Új jelszó">
-                        <label for="floatingInput">Új jelszó</label>
+                        <input type="password" class="form-control" id="Hash" name="Hash" placeholder="Új jelszó">
+                        <label for="Hash">Új jelszó</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="forgotPasswordConfirm" name="forgotPasswordConfirm" placeholder="Új jelszó visszaigazolás">
-                        <label for="floatingInput">Új jelszó visszaigazolás</label>
+                        <input type="password" class="form-control" id="PasswordConfirm" name="PasswordConfirm" placeholder="Új jelszó visszaigazolás">
+                        <label for="PasswordConfirm">Új jelszó visszaigazolás</label>
                     </div>
                     <div class="alert alert-danger mt-2" role="alert" style="display: none;">
 

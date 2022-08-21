@@ -28,10 +28,13 @@ function addexercise(){
     $trainerID = $_SESSION['PersonID'];
 
     if(strlen($exerciseName) < 4){
-        json("Rövid név");
+        json("Túl rövid a név");
     }
-    if(strlen($description)<5){
-        json("Rövid leírás");
+    if(strlen($exerciseName) > 30){
+        json("Túl hosszú a név");
+    }
+    if(strlen($description) > 100){
+        json("Túl hosszú a leírás");
     }
 
     try {
@@ -45,7 +48,13 @@ function addexercise(){
         }else{
             json("Hiba történt");
         }
-    } catch (PDOException $error) {
-        die($error);
+    } catch (PDOException $e) {
+        $existingkey = "Integrity constraint violation: 1062 Duplicate entry";
+        if (strpos($e->getMessage(), $existingkey) !== FALSE) {
+            json("Már létezik hasonló gyakorlat");
+        }else {
+            json("Hiba történt, próbálja újra");
+        }
     }
 }
+json("Invalid request");

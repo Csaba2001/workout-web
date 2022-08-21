@@ -46,6 +46,7 @@ function takeTraining(){
             json("Sikertelen művelet");
         }
     }catch(PDOException $e){
-        json("SQL hiba történt: ".$e->getMessage()); // vedd ki
+        json("Hiba történt");
     }
 }
+json("Empty request");

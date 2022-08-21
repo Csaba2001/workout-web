@@ -36,7 +36,7 @@ if($user->isTrainer()) {
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
     }
     catch (PDOException $e) {
-        $error = "Hiba tortent".$e->getMessage();
+        $error = "Hiba történt";
     }
 }
 
@@ -48,8 +48,7 @@ if($user->isUser()){
         $query->execute();
         $results = $query->fetchAll(PDO::FETCH_ASSOC);
 
-
-        $sql = "SELECT persons.FirstName, trainings.*, categories.CategoryName FROM trainings INNER JOIN persons_trainings ON persons_trainings.TrainingID = trainings.TrainingID INNER JOIN persons ON trainings.TrainerID = persons.PersonID INNER JOIN categories ON trainings.CategoryID = categories.CategoryID WHERE persons_trainings.PersonID = :pid AND TrainerID <> 0;";
+        $sql = "SELECT persons.FirstName, trainings.*, categories.CategoryName FROM trainings INNER JOIN persons_trainings ON persons_trainings.TrainingID = trainings.TrainingID INNER JOIN persons ON trainings.TrainerID = persons.PersonID INNER JOIN categories ON trainings.CategoryID = categories.CategoryID WHERE persons_trainings.PersonID = :pid AND TrainerID <> 0 AND trainings.Status = 'active';";
         $query = $dbh->prepare($sql);
         $query->bindParam(':pid', $personId);
         $query->execute();
@@ -61,7 +60,7 @@ if($user->isUser()){
         }
     }
     catch (PDOException $e) {
-        $error = "Hiba történt".$e->getMessage();
+        $error = "Hiba történt";
     }
 }
 if($user->isAdmin()){
@@ -80,7 +79,7 @@ if($user->isAdmin()){
         $query->execute();
         $trainings = $query->fetchAll(PDO::FETCH_ASSOC);
     }catch (PDOException $e){
-        $error = "SQL hiba: ".$e->getMessage();
+        $error = "Hiba történt";
     }
 
     if(isPost()){
@@ -132,10 +131,22 @@ if($user->isAdmin()){
         <h3 class="me-auto p-4 pb-0">Választott edzéstervek</h3>
         <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 g-4 m-2">
         <?php foreach($selfTrainings as $result) : ?>
+            <?php
+            if($result["status"] === "active") $banned = 0;
+            else $banned = 1;
+            ?>
             <div class="col">
-                <div class="card rounded-0">
-                    <div class="card-header rounded-0 text-bg-primary">
-                        Aktív
+                <div class="card rounded-0 <?= $banned ? "border-danger bg-danger bg-opacity-50" : "" ?>">
+                    <div class="card-header rounded-0 text-black text-bg-primary">
+                    <?php if($banned) : ?>
+                        <div class="card-header rounded-0 text-bg-danger">
+                            Letiltva
+                        </div>
+                    <?php else : ?>
+                        <div class="card-header rounded-0 text-black text-bg-primary">
+                            Aktív
+                        </div>
+                    <?php endif; ?>
                     </div>
                     <div class="card-body p-0">
                         <h5 class="card-title ps-3 pt-3 pe-3"><?= $result["description"] ?></h5>
@@ -146,10 +157,12 @@ if($user->isAdmin()){
                         </h6>
                         <ul class="list-group border-0 bg-transparent" >
                             <?php foreach($days as $day => $dayHun) : ?>
-                                <li class="list-group-item border border-0 <?php $dayofweek = date("D",time()); if($day == $dayofweek) echo "bg-primary text-white"; ?>">
+                                <li class="list-group-item border border-0 rounded-0 <?php $dayofweek = date("D",time()); if($day == $dayofweek) echo "bg-primary text-white"; ?>">
                                     <?php foreach($exercises as $exercise) : ?>
                                     <?php if($result[$day] === $exercise["ExerciseID"]) : ?>
                                     <span><?= $dayHun ?></span>:&nbsp;<span><?= $exercise["ExerciseName"] ?></span>
+                                    <br>
+                                    <span class="text-muted text-small"><?= $exercise["Description"] ?></span>
                                     <?php endif; ?>
                                     <?php endforeach; ?>
                                 </li>
@@ -180,13 +193,13 @@ if($user->isAdmin()){
                 else $banned = 1;
             ?>
             <div class="col">
-                <div class="card rounded-0 <?= $banned ? "border-danger bg-danger bg-opacity-50" : "border-primary" ?>">
+                <div class="card rounded-0 <?= $banned ? "border-danger bg-danger bg-opacity-50" : "" ?>">
                     <?php if($banned) : ?>
                     <div class="card-header rounded-0 text-bg-danger">
                         Letiltva
                     </div>
                     <?php else : ?>
-                    <div class="card-header rounded-0 text-bg-primary">
+                    <div class="card-header rounded-0 text-black text-bg-primary">
                         Aktív
                     </div>
                     <?php endif; ?>
@@ -242,12 +255,12 @@ if($user->isAdmin()){
     <?php endif; ?>
 
     <?php if(!$user->isAdmin()): ?>
-    <div class="container card col-lg-4 col-sm-10 p-3">
+    <div class="container card col-lg-4 col-sm-10 p-3 mt-4">
         <?php if(!empty($exercises)): ?>
         <form ajax id="newTrainingForm" name="newTrainingForm" action="newtraining.php" method="post" enctype="application/x-www-form-urlencoded">
             <h3>Edzésterv létrehozása</h3>
             <div class="form-floating mb-3">
-                <select class="form-select" id="trainingCategory" name="trainingCategory">
+                <select placeholder="Kategória" class="form-select" id="trainingCategory" name="trainingCategory">
                     <?php foreach($categories as $category) : ?>
                     <option value="<?= $category["CategoryID"] ?>"><?= $category["CategoryName"] ?></option>
                     <?php endforeach; ?>
@@ -256,20 +269,21 @@ if($user->isAdmin()){
             </div>
 
             <div class="form-floating mb-3">
-                <textarea class="form-control" placeholder="Edzes leirasa" id="description" name="description"></textarea>
+                <textarea class="form-control" placeholder="Edzés leírása" id="description" name="description"></textarea>
                 <label for="description">Edzés leírása</label>
             </div>
 
             <?php foreach($days as $day => $dayHun): ?>
-                <div class="form-floating mb-3">
-                    <select class="form-select" id="<?= $day ?>" name="<?= $day ?>">
-                        <?php foreach($exercises as $exercise) : ?>
-                        <option value="<?= $exercise["ExerciseID"] ?>"><?= $exercise["ExerciseName"] ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <label for="<?= $day ?>"><?= $dayHun ?></label>
-                </div>
+            <div class="form-floating mb-3">
+                <select placeholder="<?= $dayHun ?>" class="form-select" id="<?= $day ?>" name="<?= $day ?>">
+                    <?php foreach($exercises as $exercise) : ?>
+                    <option value="<?= $exercise["ExerciseID"] ?>"><?= $exercise["ExerciseName"] ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <label for="<?= $day ?>"><?= $dayHun ?></label>
+            </div>
             <?php endforeach; ?>
+
             <input type="submit" class="btn btn-primary" value="Létrehoz">
             <input type="reset" class="btn btn-secondary" value="Mégsem">
             <div class="alert alert-danger mt-2" role="alert" style="display: none;"></div>

@@ -41,12 +41,16 @@ function addtraining(){
 
     $categories = getCategories();
 
-    if(!array_key_exists($category,$categories)){
-        json("Nincs kategória kiválasztva");
+    if(!in_array($category, array_column($categories, "CategoryID"))){
+        json("Sikertelen művelet","error",["errors" => ["trainingCategory" => "Nincs kategória kiválasztva"]]);
     }
 
     if(strlen($description) < 5){
-        json("Rövid a leírás");
+        json("Sikertelen művelet","error",["errors" => ["description" => "Túl rövid a leírás"]]);
+    }
+
+    if(strlen($description) > 100){
+        json("Sikertelen művelet","error",["errors" => ["description" => "Túl hosszú a leírás"]]);
     }
 
 
@@ -69,7 +73,7 @@ function addtraining(){
 
         foreach($days as $day){
             if(!in_array($day,array_column($exercises, "ExerciseID"))){
-                json("Nincs ilyen gyakorlatod.");
+                json("Nincs ilyen gyakorlatod.","error");
             }
         }
 
@@ -103,6 +107,7 @@ function addtraining(){
             json("Sikertelen művelet");
         }
     } catch (PDOException $e) {
-        json("SQL hiba: ".$e->getMessage());
+        json("Hiba történt");
     }
 }
+json("Invalid request");

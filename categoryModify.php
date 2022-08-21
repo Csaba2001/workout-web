@@ -20,18 +20,18 @@ function modcategory(){
     global $dbh;
     $categoryID = sanitize($_POST["CategoryID"]);
     $categoryName = sanitize($_POST["CategoryName"]);
-    $action=sanitize($_POST["mod"]);
+    $action = sanitize($_POST["mod"]);
     if(!$action){
-        json('No action');
+        json("No action");
     }
     if(strlen($categoryName) < 5){
-        json("Túl rövid név");
+        json("Túl rövid a név");
     }
     if(strlen($categoryName) > 40){
-        json("Túl hosszú név");
+        json("Túl hosszú a név");
     }
     try {
-        if($action=="Modosit"){
+        if($action === "Modosit"){
             $sql= "UPDATE categories SET CategoryName=:ctg WHERE CategoryID=:cid";
             $query=$dbh->prepare($sql);
             $query->bindParam(':ctg',$categoryName);
@@ -42,11 +42,12 @@ function modcategory(){
                 json("Sikertelen módosítás");
             }
         }
-        elseif($action=="Torol"){
+        elseif($action === "Torol"){
             $sql="DELETE FROM categories WHERE CategoryID=:cid";
             $query=$dbh->prepare($sql);
             $query->bindParam(":cid",$categoryID);
             if($query->execute()){
+                setAlert("Sikeres törlés","success");
                 json("Sikeres törlés", "ok",["redirect" => "index.php?page=categories"]);
             }else{
                 json("Sikertelen törlés");
@@ -54,7 +55,7 @@ function modcategory(){
         }
         json("Hibás művelet");
     }catch (PDOException $error){
-        die($error);
+        json("Hiba történt");
     }
 }
 json("Invalid post");

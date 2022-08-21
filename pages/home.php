@@ -5,15 +5,15 @@ include_once("functions.php");
 
 $trainers = getTrainers();
 ?>
-<div class="container p-2">
+<div class="container-fluid p-0">
     <?php if(!$user): ?>
-    <div class="container-fluid d-flex flex-row col-lg-6 mb-4">
-        <div class="column">
-            <h2>Eleged van ebből?</h2>
+    <div class="container-fluid d-flex flex-row col-lg-6 mb-4 p-2">
+        <div class="d-flex flex-column">
+            <div class="d-flex flex-row justify-content-between my-2">
+                <h2>Eleged van ebből?</h2>
+                <a data-bs-toggle="modal" data-bs-target="#registerModal" role="button" class="link-primary h2 align-self-center">Regisztrálj!</a>
+            </div>
             <img class="img-fluid" src="images/man-641691_1920.jpg" alt="Pickle man">
-        </div>
-        <div>
-            <button data-bs-toggle="modal" data-bs-target="#registerModal" role="button" class="btn btn-primary">Regisztrálj!</button>
         </div>
     </div>
 
@@ -35,17 +35,17 @@ $trainers = getTrainers();
         </p>
     </div>
     <?php endif; ?>
-    <div class="container-fluid d-flex flex-column col-lg-12">
-        <h2 class="h1 mb-3">Edzőink</h2>
+    <div class="container d-flex flex-column col-lg-12">
+        <h4 class="h1 mb-3 mt-5">Edzőink</h4>
         <?php foreach($trainers as $trainer): ?>
         <?php if($trainer["approval"] === "approved"): ?>
         <div class="row mb-4 text-break">
             <div class="d-flex flex-column col-lg-8 align-items-end">
-                <h3><?= substr($trainer["LastName"],0,1).". ".$trainer["FirstName"] ?></h3>
-                <p><?= substr($trainer["CV"],0,255); if(strlen($trainer["CV"]) >= 255){ echo "..."; } ?></p>
+                <h5><?= substr($trainer["LastName"],0,1).". ".$trainer["FirstName"] ?></h5>
+                <p class="text-justify"><?= substr($trainer["CV"],0,800); if(strlen($trainer["CV"]) >= 800){ echo "..."; } ?></p>
                 <?php if($trainer["rating"]): ?>
                 <p class="fs-6 text-muted ms-2">Értékelések száma: <?= $trainer["rated"] ?></p>
-                <div class="d-flex flex-row flex-wrap-0">
+                <div class="d-flex flex-row flex-wrap-0 mb-2">
                     <?php for($i = 0; $i < $trainer["rating"]; $i++): ?>
                     <span class="material-symbols-outlined text-warning">
                     star
@@ -56,11 +56,24 @@ $trainers = getTrainers();
             </div>
             <?php if($trainer["picture"]): ?>
             <div class="col-lg-4">
-                <img class="img-fluid mt-2 mb-2" alt="<?= $trainer["FirstName"] ?>" src="images/<?= $trainer["picture"] ?>">
+                <img class="img-fluid mb-2" alt="<?= $trainer["FirstName"] ?>" src="images/<?= $trainer["picture"] ?>">
             </div>
             <?php endif; ?>
-            <hr>
+            <hr class="mb-5 mt-3">
         </div>
         <?php endif; endforeach; ?>
     </div>
+
+    <footer class="p-4 bg-dark">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="#nav" class="nav-link px-2">Vissza az oldal tetejére</a></li>
+            <li class="nav-item"><a target="_blank" href="https://github.com/Csaba2001" class="nav-link px-2">Github</a></li>
+            <li class="nav-item"><a target="_blank" href="https://pixabay.com/" class="nav-link px-2">Pixabay</a></li>
+            <li class="nav-item"><a target="_blank" href="https://getbootstrap.com/" class="nav-link px-2">Bootstrap</a></li>
+            <li class="nav-item"><a target="_blank" href="https://fonts.google.com/icons" class="nav-link px-2">Google Fonts</a></li>
+        </ul>
+        <p class="text-center text-muted">Ez az oldal egy tanulói projektmunka, az oldalon megjelenő személyek nem léteznek</p>
+        <p class="text-center text-muted">© <?= date("Y") ?> Dobó Csaba</p>
+    </footer>
+
 </div>

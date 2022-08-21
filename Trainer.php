@@ -114,7 +114,7 @@ class Trainer extends User {
                     }
                 }
             }catch(PDOException $e){
-                $this->_errors["Error"] = "SQL hiba tortent: ".$e->getMessage();
+                $this->_errors["Error"] = "Hiba történt";
                 return false;
             }
         }else{ // update trainer
@@ -134,7 +134,7 @@ class Trainer extends User {
                     return false;
                 }
             }catch(PDOException $e){
-                $this->_errors["Error"] = "SQL hiba történt: ".$e->getMessage();
+                $this->_errors["Error"] = "Hiba történt";
                 return false;
             }
         }

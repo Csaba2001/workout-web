@@ -19,7 +19,7 @@ try {
     $query->execute();
     $trainers = $query->fetchAll(PDO::FETCH_ASSOC);
 }catch (PDOException $e){
-    json("SQL hiba: ".$e->getMessage());
+    json("Hiba történt");
 }
 
 if(isPost()){
@@ -48,13 +48,13 @@ if(isPost()){
             redirect("index.php?page=trainers");
         }
     }catch (PDOException $e){
-        setAlert("Hiba lépett fel.".$e->getMessage());
+        setAlert("Hiba történt");
         redirect("index.php?page=home");
     }
 }
 ?>
 <div class="container-fluid d-flex flex-column col-lg-12">
-    <h2 class="h1 m-3 mb-5">Edzők ertekelese</h2>
+    <h2 class="h1 m-3 mb-5">Edzők értékelése</h2>
     <?php
     if($trainers):
     foreach($trainers as $trainer): ?>

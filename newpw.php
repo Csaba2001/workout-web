@@ -64,5 +64,4 @@ if(isGet() && !empty($_GET)){
 }else{
     redirect("index.php?page=home");
 }
-
 redirect("index.php?page=home");

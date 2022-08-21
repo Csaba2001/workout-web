@@ -35,6 +35,15 @@ function modexercise(){
     if(!$action){
         json("No action");
     }
+    if(strlen($exerciseName) < 4){
+        json("Túl rövid a név");
+    }
+    if(strlen($exerciseName) > 30){
+        json("Túl hosszú a név");
+    }
+    if(strlen($description) > 100){
+        json("Túl hosszú a leírás");
+    }
 
     try {
         $sql = "SELECT * FROM exercises WHERE ExerciseID = :eid AND TrainerID = :tid;";
@@ -65,15 +74,21 @@ function modexercise(){
             $query->bindParam(":eid",$exerciseID);
             $query->bindParam(":tid",$trainerID);
             if($query->execute()){
-                json("Sikeres törlés","ok");
+                setAlert("Sikeres törlés","success");
+                json("Sikeres törlés","ok",["redirect" => "index.php?page=execa"]);
             }else{
                 json("Sikertelen törlés");
             }
         }else{
             json("Invalid action");
         }
-    } catch (PDOException $error) {
-        die($error);
+    } catch (PDOException $e) {
+        $existingkey = "Integrity constraint violation: 1062 Duplicate entry";
+        if (strpos($e->getMessage(), $existingkey) !== FALSE) {
+            json("Már létezik hasonló gyakorlat");
+        }else {
+            json("Hiba történt, próbálja újra");
+        }
     }
 }
 json("Invalid post");

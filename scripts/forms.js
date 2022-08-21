@@ -54,10 +54,11 @@ function clearErrors(form, floatingForms){
     let labels = [];
     for(let i = 0; i < floatingForms.length; i++){
         labels[floatingForms[i].firstElementChild.name] = floatingForms[i].querySelector("label");
+        labels[floatingForms[i].firstElementChild.name].placeholder = floatingForms[i].querySelector("input:not([type=submit],[type=reset]), textarea, select").getAttribute("placeholder");
     }
-    for(let i = 0; i < labels.length; i++){
-        labels[i].innerHTML = "";
-    }
+    Object.keys(labels).forEach(function (key){
+        labels[key].innerHTML = labels[key].placeholder;
+    });
     for(let i = 0; i < inputs.length; i++){
         inputs[i].classList.remove("is-invalid");
     }
@@ -102,10 +103,17 @@ function ajax(e){
                 Object.keys(response.options.errors).forEach(function (key){
                     setError(form,key,response.options.errors[key]);
                     //console.log(response.options.errors[key]);
-                })
+                });
             }
             if(response.message) {
                 setAlert(form, response.message);
+            }
+            try {
+                if (response.options.errors.Error) {
+                    setAlert(form, response.options.errors.Error);
+                }
+            }catch (e) {
+                
             }
         }
         if(response.type === "ok"){

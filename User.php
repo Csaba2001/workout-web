@@ -42,10 +42,15 @@ class User {
                 $this->_errors["Error"] = "A felhasználó nincs visszaigazolva kérjük nézze meg az email fiókját";
                 return false;
             }
-            if($user->Status === "blocked"){
+            if($user->Status === "banned"){
                 $this->_errors["Error"] = "A felhasználó fiókja tiltva van";
                 return false;
             }
+            $user->CodePassword = null;
+            $user->NewPassword = null;
+            $user->NewPasswordExpires = null;
+            $user->save();
+
             $this->set($user);
             $_SESSION["PersonID"] = $user->PersonID;
             return true;
@@ -113,8 +118,8 @@ class User {
             try {
                 $sql = "INSERT INTO persons (LastName, FirstName, Phone, Email, Hash, VerifyCode, RegistrationExpires, Rank) VALUES (:lastname,:firstname, :phone, :email, :hash, :verifycode, :registrationexpires, :rank);";
                 $query = $dbh->prepare($sql);
-                $query->bindParam(":lastname", $this->FirstName);
-                $query->bindParam(":firstname", $this->LastName);
+                $query->bindParam(":lastname", $this->LastName);
+                $query->bindParam(":firstname", $this->FirstName);
                 $query->bindParam(":phone", $this->Phone);
                 $query->bindParam(":email", $this->Email);
                 $query->bindParam(":hash", $this->Hash);
@@ -164,7 +169,7 @@ class User {
                     $this->_errors["Email"] = "Az email cím már foglalt";
                     return false;
                 }else {
-                    $this->_errors["Error"] = "SQL hiba tortent: ".$e->getMessage();
+                    $this->_errors["Error"] = "Hiba történt";
                     return false;
                 }
             }
@@ -192,7 +197,7 @@ class User {
                     return true;
                 }
             }catch (PDOException $e){
-                $this->_errors["Error"] = "SQL hiba történt: ".$e->getMessage();
+                $this->_errors["Error"] = "Hiba történt";
                 return false;
             }
         }
@@ -319,7 +324,11 @@ class User {
             return false;
         }
         if(strlen($firstname) > 30){
-            $this->_errors["FirstName"] = "Túl hosszu az utónév, maximum 30 karakter";
+            $this->_errors["FirstName"] = "Túl hosszú az utónév, maximum 30 karakter";
+            return false;
+        }
+        if(1 === preg_match('~[0-9]~', $firstname)){
+            $this->_errors["FirstName"] = "Az utónév nem tartalmazhat számot";
             return false;
         }
         return true;

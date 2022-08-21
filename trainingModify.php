@@ -88,7 +88,7 @@ function modtraining(){
             json("Invalid action");
         }
     } catch (PDOException $e) {
-        json("SQL hiba: ".$e->getMessage());
+        json("Hiba történt");
     }
 }
 json("Invalid post");

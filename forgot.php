@@ -18,7 +18,7 @@ if (isPost() && !empty($_POST)) {
 function resetPassword(){
     global $dbh;
 
-    $email = sanitize($_POST["forgotEmail"]);
+    $email = sanitize($_POST["Email"]);
     $newPassword = sanitize($_POST["Hash"]);
     $newPasswordConfirm = sanitize($_POST["PasswordConfirm"]);
 
@@ -53,7 +53,7 @@ function resetPassword(){
             $user->CodePassword = null;
             $user->NewPasswordExpires = null;
             $user->save();
-            json("Az előző jelszó kérelem lejárt, ezért töröltük, generáljon újat a Küldés gombra kattintva");
+            json("Az előző jelszó kérelem lejárt, ezért töröltük, generáljon újat az űrlap elküldésével");
         }else{
             json("Már kérvényezett elfelejtett jelszót az emúlt 24 órában");
         }
@@ -72,9 +72,10 @@ function resetPassword(){
                         <a href="'.$verifyURL.'">'.$verifyURL.'</a>';
         if($user->save()){
             if(sendMail($email, "Elfelejtett jelszó", $message)){
-                json("A kérelmet sikeresen elküldtük, ellenőrizze az email fiókját", "ok");
+                setAlert("A kérelmet sikeresen elküldtük, ellenőrizze az email fiókját","success");
+                json("A kérelmet sikeresen elküldtük, ellenőrizze az email fiókját", "ok",["redirect" => "index.php?page=home"]);
             }else{
-                json("Hiba törtent, próbálja újra");
+                json("Hiba történt, próbálja újra");
             }
         }else{
             json("Hiba történt, próbálja újra");
