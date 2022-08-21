@@ -1,16 +1,7 @@
 <?php
 
 include_once("functions.php");
-/*
-_/﹋\_
-(҂`_´)
-<,︻╦╤─ ҉ - -
-_/﹋\_
-   _____________
- _/_|[][][][][] | - -
-(      Fortnite | - -
-=--OO-------OO--=dwb
- */
+
 class User {
     protected static $_currentUser;
     public static $userTypes = ["user", "trainer", "admin"];
@@ -342,6 +333,9 @@ class User {
         if(strlen($lastname) > 30){
             $this->_errors["LastName"] = "Túl hosszú a családnév, maximum 30 karakter";
             return false;
+        }
+        if(1 === preg_match('~[0-9]~', $lastname)){
+            $this->_errors["LastName"]="A családnév nem tartalmazhat számot";
         }
         return true;
     }

@@ -4,7 +4,6 @@ include("functions.php");
 include("User.php");
 include("Trainer.php");
 
-//var_dump($_SESSION);
 $user = new User();
 $user = User::getCurrentUser();
 if($user){
@@ -14,7 +13,7 @@ if($user){
         $trainer = $trainer::getFromID($user->PersonID);
     }
 }
-//var_dump($user);
+
 ?>
 <!DOCTYPE html>
 <html lang="hu">

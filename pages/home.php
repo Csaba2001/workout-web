@@ -16,6 +16,24 @@ $trainers = getTrainers();
             <button data-bs-toggle="modal" data-bs-target="#registerModal" role="button" class="btn btn-primary">Regisztrálj!</button>
         </div>
     </div>
+
+    <h3 class="container h2 my-3 text-center">CÉLJAIDNAK MEGFELELŐEN VÁLASZTHATSZ EGYÉNI, VAGY PÁROS EDZÉSEK KÖZÜL:</h3>
+    <h4 class="h3 mb-5 text-center">1/1, egyéni személyi edzés</h4>
+
+    <div class="container d-flex flex-column">
+        <p class="text-center">
+            Először, egy szakképzett edző konzultál Veled, ahol megismerjük az egészségi állapotodat, múltbeli sérüléseidet, edzéstörténetedet a konkrét céljaiddal együtt. Megtudhatod, hogyan jutsz el a fitness céljaidhoz.
+            Mindez, azért jár Neked, mert klubunk vendége vagy és nem jár semmilyen kötelezettséggel. Foglalj konzultációs időpontot a lentebb lévő gombra kattintva, az általad választott edzőnél!
+            <br><br>
+            A második alkalommal egy komplett felmérésen esel át. Egy funkcionális mozgásminta szűréssel képet kapunk a mozgásodban rejlő kockázatokról. Elemezzük a testtartásod, valamint egy Tanita teljes testanalízistvégzünk, amivel egy objektív képet kapsz a tested aktuális testzsírszázalékáról, izomtömegéről, vízháztartásáról, napi kalória szükségletéről és alapanyagcseréjéről.
+            <br><br>
+            A következő alkalommal pedig már elkezdheted a Rád szabott fitness programot, ami edzésről edzésre közelebb visz céljaidhoz. Mindenki konkrét célokkal és egy meghatározott testtel rendelkezik. A testre szabott eredményekhez személyre szabott programra van szükség.
+        </p>
+        <h4 class="h3 mb-3 mt-4 text-center">Páros személyi edzés</h4>
+        <p class="text-center">
+            Ha szeretnél, egy személyre szabott edzésprogramot, valamint szívesen eddzenél együtt más emberekkel a céljaid felé vezető úton, illetve ha egy edző társat keresel, akivel kölcsönösen tudjátok motiválni egymást. Edzéseitek energikusabbak lesznek, megtaláljátok benne a kihívásokat és jól érzitek magatokat.
+        </p>
+    </div>
     <?php endif; ?>
     <div class="container-fluid d-flex flex-column col-lg-12">
         <h2 class="h1 mb-3">Edzőink</h2>
