@@ -118,12 +118,12 @@
             <div class="modal-body">
                 <form ajax id="loginModalForm" action="login.php" method="POST" enctype="application/x-www-form-urlencoded" novalidate>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="Email" name="Email" placeholder="name@example.com">
-                        <label for="floatingInput">Email cím</label>
+                        <input type="email" class="form-control" id="Email" name="Email" placeholder="Email cím">
+                        <label for="Email">Email cím</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="Hash" name="Hash" placeholder="Jelszo">
-                        <label for="floatingPassword">Jelszó</label>
+                        <input type="password" class="form-control" id="Hash" name="Hash" placeholder="Jelszó">
+                        <label for="Hash">Jelszó</label>
                     </div>
                     <div class="alert alert-danger mt-2" role="alert" style="display: none;">
 

@@ -67,8 +67,8 @@ function resetPassword(){
         $user->NewPasswordExpires = $newpasswordexpires;
 
         $verifyURL = 'http://'.HOST.'/newpw.php?code='.$codepassword.'&email='.$email;
-        $message = '<p>Elfelejetett jelszo</p>
-                        <p>Kérjük kattintson a linkre, hogy uj jelszot generaljon: </p>
+        $message = '<p>Elfelejetett jelszó</p>
+                        <p>Kérjük kattintson a linkre, hogy új jelszót generáljon: </p>
                         <a href="'.$verifyURL.'">'.$verifyURL.'</a>';
         if($user->save()){
             if(sendMail($email, "Elfelejtett jelszó", $message)){
