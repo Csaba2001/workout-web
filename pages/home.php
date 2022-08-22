@@ -72,6 +72,7 @@ $trainers = getTrainers();
             <li class="nav-item"><a target="_blank" href="https://getbootstrap.com/" class="nav-link px-2">Bootstrap</a></li>
             <li class="nav-item"><a target="_blank" href="https://fonts.google.com/icons" class="nav-link px-2">Google Fonts</a></li>
         </ul>
+        <a class="text-center nav-link" href="https://www.flaticon.com/free-icons/weight" title="weight icons">Weight icons created by Freepik - Flaticon</a>
         <p class="text-center text-muted">Ez az oldal egy tanulói projektmunka, az oldalon megjelenő személyek nem léteznek</p>
         <p class="text-center text-muted">© <?= date("Y") ?> Dobó Csaba</p>
     </footer>
